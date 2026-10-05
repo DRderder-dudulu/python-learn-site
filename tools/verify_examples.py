@@ -33,6 +33,7 @@ failures = []
 # ---------- 1) 课程与速查示例 ----------
 files = ["js/data-course.js", "js/data-cheatsheet-adv.js"]
 files += [f"js/{p.name}" for p in sorted((ROOT / "js").glob("course-*.js"))]
+files += [f"js/{p.name}" for p in sorted((ROOT / "js").glob("cheat-*.js"))]
 blocks = []
 for rel in files:
     text = (ROOT / rel).read_text(encoding="utf-8")

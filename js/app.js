@@ -25,7 +25,7 @@ function renderModeSwitch() {
 
 /* ---------- 站点统一元信息：每页页脚自动展示 ---------- */
 const SITE_META = {
-  release: "v1.5",
+  release: "v1.6",
   versions: "Python 3.8—3.14",
   checked: "2026-09",
   doc: "https://docs.python.org/zh-cn/3/",
@@ -503,34 +503,45 @@ function viewCheatsheet() {
       ${note || ""}
       <div class="grid grid-2">` +
       g.topics.map((t) => `
-        <div class="card topic-card" data-search="${(g.layer + " " + t.title + " " + t.desc).replace(/"/g, "'")}">
+        <div class="card topic-card" data-tid="${t.id}">
           <h3><a href="#/cheatsheet/${t.id}">${t.title}</a></h3>
           <p class="muted">${t.desc}</p>
         </div>`).join("") + `</div>
     </details>`;
   let html = `
     <h1>知识速查</h1>
-    <p class="muted">核心语法 ${CHEATSHEET.length} 条，覆盖指南第 1—20 层（【一】第一遍 【二】第二阶段 【三】进阶）｜ 第三方库 ${LIB_LAYER.topics.length} 条单独维护，见本页末节。点击大层展开小层。</p>
-    <p><input id="cs-filter" class="filter-input" placeholder="输入关键词筛选（如：字典 / 生成器 / match / 报错）…"></p>`;
+    <p class="muted">核心语法 ${CHEATSHEET.length} 条，1:1 覆盖指南第 1—20 层全部小节与附录（【一】第一遍 【二】第二阶段 【三】进阶 【附】附录）｜ 第三方库 ${LIB_LAYER.topics.length} 条单独维护，见本页末节。点击大层展开小层。</p>
+    <p><input id="cs-filter" class="filter-input" placeholder="全文检索：标题 / 正文 / 代码逐字命中，空格分隔多词（如：字典 切片）…"></p>`;
   CHEATSHEET_GROUPS.forEach((g) => { html += groupHTML(g); });
   html += groupHTML(LIB_LAYER, `<p class="muted cs-note">库生态变化快，本节与核心语法分开核对：最后核对 ${LIB_META.checked} ｜ 选库按四要素——适用场景 / 入门门槛 / 维护状态 / 官方文档，不以下载量为依据 ｜ <a href="${LIB_META.doc}" target="_blank" rel="noopener">PyPI ↗</a></p>`);
   $app.innerHTML = html;
   const groups = Array.from($app.querySelectorAll("details.cs-group"));
+  // 全文检索索引：层名 + 标题 + 摘要 + 正文（去 HTML 标签）+ 示例代码，逐字可命中
+  const stripTags = (s) => (s || "").replace(/<[^>]*>/g, " ");
+  const searchIndex = new Map();
+  CHEATSHEET_GROUPS.concat([LIB_LAYER]).forEach((g) =>
+    g.topics.forEach((t) => searchIndex.set(t.id,
+      (g.layer + " " + t.title + " " + t.desc + " " + stripTags(t.html) + " " + (t.code || "")).toLowerCase())));
   let filtering = false;
   groups.forEach((d) => d.addEventListener("toggle", () => {
     if (!filtering) d.dataset.useropen = d.open ? "1" : "0";
   }));
   document.getElementById("cs-filter").addEventListener("input", (e) => {
-    const kw = e.target.value.trim();
+    const kw = e.target.value.trim().toLowerCase();
+    const kws = kw.split(/\s+/).filter(Boolean);             // 空格分隔多词，AND 匹配
     if (kw && !filtering) { filtering = true; groups.forEach((d) => (d.open = true)); }          // 筛选时自动展开全部大层
     if (!kw && filtering) { filtering = false; groups.forEach((d) => (d.open = d.dataset.useropen === "1")); } // 清空后恢复手动开合状态
     groups.forEach((d) => {
       let visible = 0;
-      d.querySelectorAll(".topic-card").forEach((c) => {
-        const show = !kw || c.dataset.search.includes(kw);
+      const cards = d.querySelectorAll(".topic-card");
+      cards.forEach((c) => {
+        const text = searchIndex.get(c.dataset.tid) || "";
+        const show = kws.length === 0 || kws.every((k) => text.includes(k));
         c.style.display = show ? "" : "none";
         if (show) visible++;
       });
+      const countEl = d.querySelector(".cs-count");
+      if (countEl) countEl.textContent = kw ? `${visible}/${cards.length} 条` : `${cards.length} 条`;
       d.style.display = !kw || visible > 0 ? "" : "none";   // 无命中的大层整组隐藏
     });
   });
