@@ -1,9 +1,11 @@
 /* ===== 课程内容数据 · 第十八层 =====
  * 内容来源：《Python 3 语法完全指南》（outputs/python-syntax-guide.md）第十八层 · 工程基础。
  * 写法规范与 data-course.js 一致：section.id 即指南小节号；points 为分条要点（内联 <code>/<b>）；
+ * 【对应规范】points 每条要点必须在 code 中有明确对应：可演示的写成可运行代码并配注释；
+ * 错误/危险示范以「故意注释掉」的形式呈现（学员可取消注释亲测报错）；
  * venv / pip / pytest 等命令行操作无法直接运行，按约定写进注释，代码体演示可运行的相关 Python；
  * code 示例均经本地 Python 实际运行验证（verify_course_expect.py）；expect 为真实输出。
- * 适用版本：3.8—3.14 ｜ 最后核对：2026-09
+ * 适用版本：3.8—3.14 ｜ 最后核对：2026-10
  */
 COURSE.push({
   id: 18,
@@ -12,7 +14,7 @@ COURSE.push({
   goal: "会用 venv/pip 管理依赖、搭项目骨架、用 logging 记录运行、靠断言与 pytest 守住质量",
   prereq: "第六层（模块与包）",
   versions: "3.8—3.14",
-  checked: "2026-09",
+  checked: "2026-10",
   sections: [
     {
       id: "18.1", title: "虚拟环境与 pip：给每个项目一座独立厨房",
@@ -24,11 +26,18 @@ COURSE.push({
         "pip 四板斧：<code>pip install 库名</code>、<code>-U</code> 升级、<code>uninstall</code> 卸载、<code>list</code> 看已装",
         "⭐ 装错解释器是新手第一大坑：用 <code>python -m pip install 库名</code> 最保险",
       ],
-      code: String.raw`# 命令行操作（在系统终端执行，不是 Python 代码）：
-#   python -m venv .venv              # 创建虚拟环境
+      code: String.raw`# 第三方包装进系统 Python 会互相打架：每个项目一个虚拟环境，各装各的互不污染。
+# 命令行操作（在系统终端执行，不是 Python 代码）：
+#   python -m venv .venv              # 创建虚拟环境；激活后命令行前出现 (.venv)，之后的 pip 只装进这里
 #   .venv\Scripts\activate            # Windows 激活
 #   source .venv/bin/activate         # macOS / Linux 激活
 #   deactivate                        # 退出
+# pip 四板斧：
+#   pip install 库名                   # 安装
+#   pip install -U 库名                # 升级
+#   pip uninstall 库名                 # 卸载
+#   pip list                          # 看已装
+#   python -m pip install 库名         # ⭐ 最保险写法：装错解释器是新手第一大坑，这样保证装进当前 Python
 import sys
 
 # 程序里也能判断自己正跑在哪个环境
@@ -48,20 +57,22 @@ print("Python 大版本：", sys.version_info.major)`,
         "⭐ 安装名 ≠ 导入名：beautifulsoup4 → bs4、pillow → PIL，装错名字找不到包",
       ],
       code: String.raw`# 命令行回顾（激活虚拟环境后执行）：
-#   pip freeze > requirements.txt      # 导出依赖清单
-#   pip install -r requirements.txt    # 换机器按清单复现环境
+#   pip freeze > requirements.txt      # 导出依赖清单：把当前环境所有库和版本写进清单——像给环境拍照
+#   pip install -r requirements.txt    # 换机器/部署时按清单一键复现同一个环境
+#   pip install "requests==2.32.3"     # 锁版本写法：项目越大越要锁
+# ⭐ 安装名 ≠ 导入名：beautifulsoup4 → 导入 bs4、pillow → 导入 PIL，装错名字找不到包
 import sys
 import importlib.util
 
-# 自检 1：Python 版本底线
+# 自检 1：Python 版本底线——版本不够就提示，别让用户猜
 if sys.version_info < (3, 8):
     raise SystemExit("需要 Python 3.8+")
-print("Python 版本：", sys.version.split()[0])
+print("满足 3.8+ 底线：", sys.version_info >= (3, 8))
 
-# 自检 2：不导入就能探测某个库装没装
+# 自检 2：不导入就能探测某个库装没装，缺库就报清楚
 for name in ["pip", "json"]:
     print(name, "可用：", importlib.util.find_spec(name) is not None)`,
-      expect: "Python 版本： 3.13.14\npip 可用： True\njson 可用： True",
+      expect: "满足 3.8+ 底线： True\npip 可用： True\njson 可用： True",
       note: "把 json 换成 requests 再跑——没装就会显示 False。",
     },
     {
@@ -74,18 +85,21 @@ for name in ["pip", "json"]:
         "src 布局强迫你按「安装后的包」来导入，提前暴露导包错误",
         "测试统一放 <code>tests/</code> 与源码平级，pytest 默认就来这里找",
       ],
-      code: String.raw`# 推荐的项目骨架（先用 pathlib 造出来，比手点鼠标快）：
+      code: String.raw`# 结构就是可维护性：脚本随手堆在一个文件夹，三个月后连自己都不敢动。
+# 推荐的项目骨架（先用 pathlib 造出来，比手点鼠标快）：
 # myproject/
-# ├── pyproject.toml      # 项目「身份证」：名称/版本/依赖
-# ├── src/myproject/__init__.py
-# └── tests/
+# ├── pyproject.toml      # 项目「身份证」：[project] 下写 name / version / dependencies
+# ├── README.md           # 项目说明书
+# ├── src/myproject/__init__.py   # src 布局：强迫按「安装后的包」来导入，提前暴露导包错误
+# └── tests/              # 测试统一放这里、与源码平级，pytest 默认就来这里找
 from pathlib import Path
 
 root = Path("myproject")
 (root / "src" / "myproject").mkdir(parents=True, exist_ok=True)
 (root / "tests").mkdir(exist_ok=True)
 (root / "src" / "myproject" / "__init__.py").write_text("", encoding="utf-8")
-(root / "pyproject.toml").write_text('[project]\nname = "myproject"\n', encoding="utf-8")
+(root / "pyproject.toml").write_text(
+    '[project]\nname = "myproject"\nversion = "0.1.0"\ndependencies = []\n', encoding="utf-8")
 
 for p in sorted(root.rglob("*")):
     print(p.as_posix())`,
@@ -104,19 +118,28 @@ for p in sorted(root.rglob("*")):
       ],
       code: String.raw`import logging, sys
 
-# 默认日志输出到 stderr；这里接到 stdout 方便观察
+# print 调试像狗仔队：用完得一个个删；logging 是正规军：分级记录、一键开关。
+# 快速玩法：logging.basicConfig(level=logging.INFO) 一行配全局；
+# 正式项目用 getLogger("名字") 分模块（本例即此写法）。
+# ⭐ 日志默认写到 stderr 而非 print 的 stdout；这里特意接到 stdout 方便观察
 handler = logging.StreamHandler(sys.stdout)
 handler.setFormatter(logging.Formatter("[%(levelname)s] %(message)s"))
 log = logging.getLogger("demo")
-log.setLevel(logging.INFO)
+log.setLevel(logging.INFO)          # 设到哪级，就显示哪级及以上
 log.addHandler(handler)
 
+# 级别链：DEBUG < INFO < WARNING < ERROR < CRITICAL
 log.debug("细节：级别不够，不显示")
 log.info("普通信息")
 log.warning("警告")
 
-print("级别比大小：", logging.DEBUG < logging.INFO < logging.WARNING)`,
-      expect: "[INFO] 普通信息\n[WARNING] 警告\n级别比大小： True",
+print("级别比大小：", logging.DEBUG < logging.INFO < logging.WARNING)
+
+try:
+    1 / 0
+except ZeroDivisionError:
+    log.exception("算崩了")     # except 块里用 logging.exception：自动附带异常堆栈`,
+      expect: "[INFO] 普通信息\n[WARNING] 警告\n级别比大小： True\n[ERROR] 算崩了\nTraceback (most recent call last):\n  File \"<string>\", line 21, in <module>\n    1 / 0\n    ~~^~~\nZeroDivisionError: division by zero",
       note: "把 setLevel 改成 logging.WARNING，看哪几行会消失。",
     },
     {
@@ -129,9 +152,11 @@ print("级别比大小：", logging.DEBUG < logging.INFO < logging.WARNING)`,
         "pdb 是单步显微镜：<code>python -m pdb script.py</code>；或写 <code>breakpoint()</code> 自动进入",
         "调试核心思路：<b>先复现，再缩小范围，最后才猜原因</b>",
       ],
-      code: String.raw`# 交互式调试（了解）：python -m pdb script.py；或代码里写 breakpoint() 自动进入
+      code: String.raw`# 交互式调试（在终端执行）：python -m pdb script.py 是单步显微镜；或代码里写 breakpoint() 自动进入
+# ⭐ python -O 运行会删掉所有 assert：它是开发期护栏，【不能】当输入校验用
+# 调试核心思路：先复现，再缩小范围，最后才猜原因
 def average(nums):
-    assert len(nums) > 0, "列表不能为空"   # 断言：守住「绝不该发生」的底线
+    assert len(nums) > 0, "列表不能为空"   # 断言：守住「绝不该发生」的底线，一破就当场爆炸
     return sum(nums) / len(nums)
 
 print(average([80, 90, 100]))
@@ -141,7 +166,7 @@ try:
 except AssertionError as e:
     print("断言拦截：", e)
 
-# print 调试法：在关键位置打印中间值
+# print 调试法：在关键位置打印中间值，二分定位比干瞪眼快十倍
 total = 0
 for i in range(3):
     total += i * 10
@@ -159,9 +184,12 @@ for i in range(3):
         "测试之间互不影响：一个挂了其他照跑，报告最后汇总",
         "同门三件套顺带认识：<code>ruff</code> 查代码问题、<code>mypy</code> 查类型（配合第十三层）",
       ],
-      code: String.raw`# 命令行用法（先把测试存进 tests/test_calc.py）：
+      code: String.raw`# 手工点一遍验证叫冒烟；写成测试，就能每次改完自动全跑一遍。
+# 命令行用法（先把测试存进 tests/test_calc.py——文件叫 test_*.py、函数叫 test_*）：
 #   pip install pytest
-#   pytest            # 自动发现并运行所有 test_ 开头的函数
+#   pytest            # 自动发现 tests/ 下所有测试，绿的通过、红的失败并定位
+# 测试之间互不影响：一个挂了其他照跑，报告最后汇总。
+# 同门三件套顺带认识：ruff 查代码问题、mypy 查类型（配合第十三层）。
 def add(a, b):
     return a + b
 

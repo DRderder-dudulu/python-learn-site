@@ -25,7 +25,7 @@ function renderModeSwitch() {
 
 /* ---------- 站点统一元信息：每页页脚自动展示 ---------- */
 const SITE_META = {
-  release: "v1.7",
+  release: "v1.8",
   versions: "Python 3.8—3.14",
   checked: "2026-09",
   doc: "https://docs.python.org/zh-cn/3/",

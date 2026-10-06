@@ -83,7 +83,7 @@ hi("小明")`,
 <li>⭐ <code>__exit__</code> 返回 True 会<b>吞掉异常</b>——谨慎使用（返回 False/None 则正常向外传播）</li>
 <li>⭐ <code>@contextmanager</code> 用<b>生成器</b>快速写一个：yield 之前是 __enter__ 的逻辑，<b>yield 出来的值</b>绑定给 as 后的名字；with 块里抛的异常会在 yield 处<b>重新抛出</b>——用 <code>try/finally</code> 保证收尾一定执行</li>
 <li><b>contextlib 其他好帮手</b>：<code>suppress(某异常)</code> 安静忽略指定异常｜<code>redirect_stdout(buf)</code> 把 print 抓进 <code>io.StringIO</code>（测试与收集输出都靠它）｜<code>closing()</code> 给没有 __exit__ 的对象补上 close 调用｜<code>ExitStack</code> 动态管理"数量不定"的多个上下文（<code>stack.enter_context(...)</code>）</li>
-<li>顺带一提：<code>@staticmethod</code> / <code>@classmethod</code> 也是内置装饰器（第七层已见过）</li></ul>`,
+<li>顺带一提：<code>@staticmethod</code> / <code>@classmethod</code> 也是内置装饰器（速查表 §7.2 已见过）</li></ul>`,
       code: String.raw`import os, io, time
 from contextlib import contextmanager, suppress, redirect_stdout, ExitStack
 

@@ -1,9 +1,11 @@
 /* ===== 课程内容数据 · 第九层 =====
  * 内容来源：《Python 3 语法完全指南》（outputs/python-syntax-guide.md）第九层 · 二进制数据。
- * 写法规范与 data-course.js 一致：section.id 即指南小节号；points 为分条要点（内联 <code>/<b>）；
- * code 示例均经本地 Python 实际运行验证；expect 为真实输出。
+ * 写法规范：section.id 即指南小节号；points 为分条要点（内联 <code>/<b>）；
+ * 【对应规范】points 每条要点必须在 code 中有明确对应：可演示的写成可运行代码并配注释；
+ * 错误/危险示范以「故意注释掉」的形式呈现（学员可取消注释亲测报错）；
+ * code 示例均经本地 Python 实际运行验证（tools/verify_examples.py + verify_expects.py）；expect 为真实输出。
  * 说明：二进制文件读写示例改用 io.BytesIO 在内存中模拟（不依赖真实磁盘文件，浏览器 Pyodide 也能跑）。
- * 适用版本：3.8—3.14 ｜ 最后核对：2026-09
+ * 适用版本：3.8—3.14 ｜ 最后核对：2026-10
  */
 COURSE.push({
   id: 9,
@@ -12,7 +14,7 @@ COURSE.push({
   goal: "分清字符与字节两座世界：编解码、bytearray、memoryview 与 struct 打包",
   prereq: "第八层（文件读写）",
   versions: "3.8—3.14",
-  checked: "2026-09",
+  checked: "2026-10",
   sections: [
     {
       id: "9.1", title: "bytes：字符与字节的两座世界",
@@ -24,16 +26,19 @@ COURSE.push({
         "⭐ 编解码必须用同一种格式：拿 gbk 去解 utf-8 的字节，轻则乱码，重则 UnicodeDecodeError",
         "bytes 的方法与 str 类似（find/split/replace/startswith……），但参数也得是 bytes（记得加 b 前缀）",
       ],
-      code: String.raw`b = b"ABC"
-print(b[0])              # 按下标取出的是整数
-print(b.hex())           # 414243
+      code: String.raw`b = b"ABC"              # bytes 字面量：只能写 ASCII 字符
+print(b[0])              # ⭐ 按下标取出的是整数 65，不是字符 "A"
+print(list(b))           # bytes 就是 0—255 的整数序列
+print(b.hex())           # 414243：网络传输、图片、压缩包里跑的就是这种字节
 
-data = "你好".encode("utf-8")   # str → bytes：编码
+data = "你好".encode("utf-8")   # 两座世界之间的桥：str → bytes 编码
 print(data)
-print(data.decode("utf-8"))     # bytes → str：解码
+print(data.decode("utf-8"))     # bytes → str 解码回文字
 
-print(b"a,b".split(b","))       # 分隔符也要加 b 前缀`,
-      expect: "65\n414243\nb'\\xe4\\xbd\\xa0\\xe5\\xa5\\xbd'\n你好\n[b'a', b'b']",
+# data.decode("gbk")            # ⭐ 错误示范（故意注释掉）：编解码必须同格式，拿 gbk 解 utf-8 轻则乱码重则 UnicodeDecodeError
+print(b"a,b".split(b","))       # bytes 方法与 str 类似，但参数也得是 bytes（记得加 b 前缀）
+print(b"img.png".startswith(b"img"))  # find/replace/startswith…… 同理`,
+      expect: "65\n[65, 66, 67]\n414243\nb'\\xe4\\xbd\\xa0\\xe5\\xa5\\xbd'\n你好\n[b'a', b'b']\nTrue",
       note: "把 decode 的参数改成 \"gbk\" 再运行，看看会报错还是解出奇怪的文字。",
     },
     {
@@ -46,13 +51,18 @@ print(b"a,b".split(b","))       # 分隔符也要加 b 前缀`,
         "<code>bytes(ba)</code> 把可变的 bytearray 冻回不可变的 bytes",
       ],
       code: String.raw`ba = bytearray(b"ABC")
-ba[0] = 97          # 赋整数：97 就是 'a'
+ba[0] = 97          # ⭐ 按下标赋的是整数：97 就是 'a'，改的是原对象本身
 print(ba)
-ba.append(68)       # 68 就是 'D'
-ba.extend(b"EF")
+ba.append(68)       # append 一个整数：68 就是 'D'
+ba.extend(b"EF")    # extend 接上另一个字节串
 print(ba)
-print(bytes(ba))    # 转回 bytes`,
-      expect: "bytearray(b'aBC')\nbytearray(b'aBCDEF')\nb'aBCDEF'",
+print(bytes(ba))    # bytes(ba)：把可变的冻回不可变的 bytes
+
+b = b"ABC"
+# b[0] = 97         # ⭐ 错误示范（故意注释掉）：bytes 不可变，会报 TypeError；就地改字节请用 bytearray
+b2 = b.replace(b"A", b"a")   # bytes 的任何「修改」都会新建对象
+print(b, b2)`,
+      expect: "bytearray(b'aBC')\nbytearray(b'aBCDEF')\nb'aBCDEF'\nb'ABC' b'aBC'",
       note: "试试 ba[0] = 256 会报什么错——一个字节最大只能到 255。",
     },
     {
@@ -66,18 +76,24 @@ print(bytes(ba))    # 转回 bytes`,
       ],
       code: String.raw`import io
 
+# 真实文件的标准写法（这里改用 BytesIO 在内存里模拟，接口完全一样，浏览器里也能跑）：
+# with open("a.bin", "wb") as f:      # "wb" 写入必须给 bytes，编解码要自己接手
+#     f.write("你好".encode("utf-8"))
+# with open("a.bin", "rb") as f:      # "rb" 读出来的是 bytes
+#     print(f.read())
+
 buf = io.BytesIO()                  # 内存里的「二进制文件」
 buf.write("你好".encode("utf-8"))   # 写入必须是 bytes
 buf.write(b"\x00\x01")
 
-buf.seek(0)                         # 回到开头再读
+buf.seek(0)                         # 文件指针：写完想从头读，先 seek(0) 回到开头
 data = buf.read()
 print(data)
 print(data[:6].decode("utf-8"))     # 前 6 字节解码回文字
 
 ba = bytearray(b"hello world")
-mv = memoryview(ba)                 # 零拷贝视图
-mv[6:] = b"WORLD"                   # 透过视图改底层数据
+mv = memoryview(ba)                 # ⭐ memoryview：不复制的「视图」，省内存
+mv[6:] = b"WORLD"                   # 透过视图直接改底层字节
 print(ba)`,
       expect: "b'\\xe4\\xbd\\xa0\\xe5\\xa5\\xbd\\x00\\x01'\n你好\nbytearray(b'hello WORLD')",
       note: "把 mv[6:] 改成 mv[:5] = b\"HELLO\"，体会「改视图就是改原数据」。",
@@ -94,15 +110,23 @@ print(ba)`,
       ],
       code: String.raw`import struct
 
-packed = struct.pack(">ih", 1000, 2)   # 大端：4字节int + 2字节short
+# 用途：网络协议、文件头解析；日常纯文本处理用不到，见到不慌即可
+packed = struct.pack(">ih", 1000, 2)   # ⭐ > 大端（高位在前，网络协议通用）：i=4字节int + h=2字节short
 print(packed)
 print(packed.hex())
-print(struct.unpack(">ih", packed))    # 用同一格式串解包
+print(struct.unpack(">ih", packed))    # unpack 解回元组；格式串必须与打包完全一致
 
-little = struct.pack("<ih", 1000, 2)   # 小端：同样的数，字节顺序相反
+little = struct.pack("<ih", 1000, 2)   # < 小端（x86 内存常见）：同样的数，字节顺序相反
 print(little.hex())
-print(len(packed))                     # 4 + 2 = 6 字节`,
-      expect: "b'\\x00\\x00\\x03\\xe8\\x00\\x02'\n000003e80002\n(1000, 2)\ne80300000200\n6",
+print(len(packed))                     # 4 + 2 = 6 字节
+
+one = struct.pack(">Bf", 65, 0.5)      # B=1字节无符号、f=4字节float
+print(one.hex())
+print(struct.unpack(">Bf", one))
+
+# struct.pack("ih", 1000, 2)           # ⭐ 不写字节序就按本机习惯来：跨平台/写协议务必显式指定
+# struct.unpack(">hi", packed)         # ⭐ 错误示范（故意注释掉）：解包格式与打包不一致，会报 struct.error`,
+      expect: "b'\\x00\\x00\\x03\\xe8\\x00\\x02'\n000003e80002\n(1000, 2)\ne80300000200\n6\n413f000000\n(65, 0.5)",
       note: "把 \">ih\" 换成 \"ih\"（不写字节序）对比 hex 输出，体会为什么要显式指定。",
     },
   ],

@@ -1,9 +1,11 @@
 /* ===== 课程内容数据 · 第十九层 =====
  * 内容来源：《Python 3 语法完全指南》（outputs/python-syntax-guide.md）第十九层 · 高级话题（入门阶段可暂缓）。
  * 写法规范与 data-course.js 一致：section.id 即指南小节号；points 为分条要点（内联 <code>/<b>）；
+ * 【对应规范】points 每条要点必须在 code 中有明确对应：可演示的写成可运行代码并配注释；
+ * 错误/危险示范以「故意注释掉」的形式呈现（学员可取消注释亲测报错）；
  * 每节配一个「看得见效果」的小示例，强调「知道存在、用到再查」；
  * code 示例均经本地 Python 实际运行验证（verify_course_expect.py）；expect 为真实输出。
- * 适用版本：3.8—3.14 ｜ 最后核对：2026-09
+ * 适用版本：3.8—3.14 ｜ 最后核对：2026-10
  */
 COURSE.push({
   id: 19,
@@ -12,7 +14,7 @@ COURSE.push({
   goal: "认识五个高级机制：描述符、元类、闭包陷阱、__slots__、垃圾回收——知道存在、用到再查",
   prereq: "第七层（面向对象）",
   versions: "3.8—3.14",
-  checked: "2026-09",
+  checked: "2026-10",
   sections: [
     {
       id: "19.1", title: "描述符：属性访问的「后台」",
@@ -24,7 +26,10 @@ COURSE.push({
         "<code>@property</code>、<code>classmethod</code>、<code>staticmethod</code>、普通方法，本质都是描述符",
         "入门阶段<b>知道存在、用到再查</b>：读源码见到 __get__ 不慌就行",
       ],
-      code: String.raw`class Logged:
+      code: String.raw`# 描述符：实现了 __get__ / __set__ / __delete__ 之一的对象（本例实现了前两个）。
+# @property、classmethod、staticmethod、普通方法，本质都是描述符——入门阶段知道存在、用到再查。
+# ⭐ 查找顺序：数据描述符（有 __set__）→ 实例 __dict__ → 非数据描述符/类属性 → __getattr__ 兜底
+class Logged:
     def __set_name__(self, owner, name):
         self.name = name
     def __get__(self, obj, objtype=None):
@@ -40,7 +45,7 @@ class A:
     x = Logged()
 
 a = A()
-a.x = 1        # 表面是普通赋值，实际走了 Logged.__set__
+a.x = 1        # 表面是普通赋值，实际悄悄走了 Logged.__set__——属性访问是有后台的
 print(a.x)     # 表面是普通读取，实际走了 Logged.__get__`,
       expect: "写入 x = 1\n读取 x\n1",
       note: "把 a.x = 1 换成 print(A.x)——通过类访问时 __get__ 收到的 obj 是 None。",
@@ -55,15 +60,16 @@ print(a.x)     # 表面是普通读取，实际走了 Logged.__get__`,
         "<code>__new__(cls)</code> 真正创建并返回实例；<code>__init__(self)</code> 只做初始化赋值",
         "自定义不可变类型（继承 int/str/tuple）必须重写 __new__：值在创建瞬间就要定型",
       ],
-      code: String.raw`class MyMeta(type):                       # 元类继承 type
+      code: String.raw`# 类是造对象的图纸，元类是造图纸的图纸——默认元类就是 type（自定义元类都继承它）
+class MyMeta(type):
     def __new__(mcs, name, bases, attrs):
         print(f"正在创建类：{name}")
         return super().__new__(mcs, name, bases, attrs)
 
-class Foo(metaclass=MyMeta):               # 定义这行时就会打印
+class Foo(metaclass=MyMeta):               # 定义类的这一刻，元类的 __new__ 就会执行
     pass
 
-# 多数「控制类创建」的需求，用更简单的 __init_subclass__ 就够
+# ⭐ 99% 的「想控制类创建」需求，用更简单的 __init_subclass__ 就够，别急着上元类
 class Base:
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
@@ -72,7 +78,8 @@ class Base:
 class Child(Base):
     pass
 
-# 自定义不可变类型：必须在 __new__ 阶段定型
+# __new__(cls) 真正创建并返回实例；__init__(self) 只做初始化赋值。
+# 自定义不可变类型（继承 int/str/tuple）必须重写 __new__：值在创建瞬间就要定型
 class PositiveInt(int):
     def __new__(cls, value):
         if value <= 0:
@@ -100,18 +107,19 @@ except ValueError as e:
       code: String.raw`def make_counter():
     count = 0
     def inc():
-        nonlocal count
+        nonlocal count         # 修改被带走的外层变量，要用 nonlocal 声明
         count += 1
         return count
-    return inc
+    return inc                 # 闭包：内层函数把外层变量「打包带走」，外层返回后它还活着
 
 c = make_counter()
 print(c(), c(), c())          # count 被闭包「随身携带」
 
+# ⭐⭐ 延迟绑定坑（回调、按钮事件里最常见）：所有 lambda 共享同一个循环变量
 funcs = [lambda: i for i in range(3)]
-print([f() for f in funcs])   # 三个函数共享循环结束后的 i
+print([f() for f in funcs])   # 调用时才取 i，那时循环已结束——全是同一个值
 
-funcs = [lambda i=i: i for i in range(3)]   # 用默认值把当前 i 固定下来
+funcs = [lambda i=i: i for i in range(3)]   # 解法：默认参数把当前值「钉」在定义时刻
 print([f() for f in funcs])`,
       expect: "1 2 3\n[2, 2, 2]\n[0, 1, 2]",
       note: "把第二组 lambda 的 i=i 去掉，输出又变回 [2, 2, 2]。",
@@ -127,7 +135,7 @@ print([f() for f in funcs])`,
         "现代写法 <code>typing.NamedTuple</code> 可带注解和默认值；要可变就上 @dataclass（13.5）",
       ],
       code: String.raw`class Point:
-    __slots__ = ("x", "y")     # 实例只能有 x、y，且没有 __dict__
+    __slots__ = ("x", "y")     # 省掉实例的 __dict__ 字典：省内存（百万级小对象效果明显）+ 属性名固定
     def __init__(self, x, y):
         self.x, self.y = x, y
 
@@ -135,18 +143,26 @@ p = Point(1, 2)
 print(p.x, p.y)
 print("有 __dict__ 吗：", hasattr(p, "__dict__"))
 try:
-    p.z = 3                  # 未声明的属性，当场拦住
+    p.z = 3                  # 误敲未声明的属性名，当场拦住
 except AttributeError as e:
     print("拦住了：", e)
 
-from typing import NamedTuple
-class P2(NamedTuple):
+# ⭐ 父类没定义 __slots__ 时，子类实例仍会有 __dict__，效果打折
+class NoSlots:
+    pass
+class Kid(NoSlots):
+    __slots__ = ()
+print("父类没定义，子类还有 __dict__：", hasattr(Kid(), "__dict__"))
+
+from typing import NamedTuple   # 现代写法：可带注解和默认值（要可变就上 @dataclass，见 13.5）
+class P2(NamedTuple):           # 轻量不可变「数据类」
     x: int
     y: int = 0
 
 q = P2(5)
-print(q.x, q.y)`,
-      expect: "1 2\n有 __dict__ 吗： False\n拦住了： 'Point' object has no attribute 'z' and no __dict__ for setting new attributes\n5 0",
+print(q.x, q.y)                # 属性访问
+print(q[0], q[1])              # 下标也能访问`,
+      expect: "1 2\n有 __dict__ 吗： False\n拦住了： 'Point' object has no attribute 'z' and no __dict__ for setting new attributes\n父类没定义，子类还有 __dict__： True\n5 0\n5 0",
       note: "把 __slots__ 里的 y 删掉，再访问 p.y 看报什么错。",
     },
     {
@@ -161,23 +177,33 @@ print(q.x, q.y)`,
       ],
       code: String.raw`import sys, gc, weakref
 
+# CPython 主要靠【引用计数】：没有名字指向的对象，计数归零立即回收
 a = [1, 2, 3]
 n0 = sys.getrefcount(a)
 b = a                              # 又多一个标签指向同一个列表
 print("引用增加了：", sys.getrefcount(a) - n0)
-del b
+del b                              # del 只是减计数，不是删对象
 print("删名后回到：", sys.getrefcount(a) - n0)
+
+# 循环引用（a 指 b、b 指 a）：计数降不到 0，交给分代回收器 gc 定期清扫
+a2, b2 = {}, {}
+a2["friend"] = b2
+b2["friend"] = a2
+del a2, b2
+gc.collect()
+print("循环引用已交给 gc 清扫")
 
 class Big:
     pass
 
 obj = Big()
-ref = weakref.ref(obj)             # 弱引用：不增加引用计数
+ref = weakref.ref(obj)             # 弱引用：不增加引用计数，对象没了自动变 None，适合做缓存
 print(ref() is obj)                # 对象还在，能拿到
 del obj                            # 计数归零 → CPython 立即回收
 gc.collect()
-print(ref())                       # 对象没了，弱引用返回 None`,
-      expect: "引用增加了： 1\n删名后回到： 0\nTrue\nNone",
+print(ref())                       # 对象没了，弱引用返回 None
+# ⭐ __del__ 的触发时机不可靠，关键清理请用 with（第十二层）`,
+      expect: "引用增加了： 1\n删名后回到： 0\n循环引用已交给 gc 清扫\nTrue\nNone",
       note: "在 del obj 前后各打印一次 ref()，体会弱引用的「不续命」。",
     },
   ],
