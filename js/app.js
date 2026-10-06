@@ -25,9 +25,9 @@ function renderModeSwitch() {
 
 /* ---------- 站点统一元信息：每页页脚自动展示 ---------- */
 const SITE_META = {
-  release: "v1.9",
+  release: "v2.0",
   versions: "Python 3.8—3.14",
-  checked: "2026-09",
+  checked: "2026-10",
   doc: "https://docs.python.org/zh-cn/3/",
 };
 function metaFooterHTML() {
@@ -575,6 +575,112 @@ function viewCheatTopic(id) {
   bindRunners($app);
 }
 
+/* ---------- 视图 10：问答（本地检索 + 可选大模型） ---------- */
+function qaEntryHtml(h) {
+  const e = h.entry;
+  if (e.kind === "cheat") {
+    return `<h3>📖 ${e.title} <span class="muted">· 速查专题</span></h3>
+      <div class="qa-body">${e.html}</div>
+      ${e.code ? codeBlockHTML(e.code) : ""}
+      <p><a class="go-btn" href="${e.url}">打开专题 →</a></p>`;
+  }
+  return `<h3>📗 ${e.title} <span class="muted">· ${e.desc}</span></h3>
+    <ul>${e.points.map((p) => `<li>${p}</li>`).join("")}</ul>
+    ${e.code ? codeBlockHTML(e.code) : ""}
+    <p><a class="go-btn" href="${e.url}">打开课程 →</a></p>`;
+}
+
+function qaLocalAnswer(q) {
+  const hits = QA.retrieve(q, 3);
+  if (!hits.length || hits[0].score < QA.MAYBE) {
+    return `<p>🤔 这个问题里我没识别出 Python 相关的知识点——我只回答 Python 学习问题。试试这样问：</p>
+      <ul><li>「round(2.5) 为什么是 2」</li><li>「is 和 == 有什么区别」</li><li>「怎么读取文件」</li><li>「什么是装饰器」</li></ul>`;
+  }
+  const unsure = hits[0].score < QA.CONFIDENT ? `<p class="muted">我不太确定，最相关的是这些：</p>` : "";
+  const more = hits.slice(1).filter((h) => h.score >= QA.MAYBE)
+    .map((h) => `<a href="${h.entry.url}">${h.entry.title}</a>`).join(" ｜ ");
+  return unsure + qaEntryHtml(hits[0]) + (more ? `<p class="muted">相关推荐：${more}</p>` : "");
+}
+
+function viewQA() {
+  const s = QA.llmSettings();
+  const esc1 = (v) => String(v || "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+  const aiOn = s.enabled && s.key;
+  $app.innerHTML = `
+    <h1>💬 学习问答</h1>
+    <p class="muted">知识库 = 本站 105 个速查专题 + 93 个课程小节（源自《Python 语法完全指南》）。
+      当前模式：${aiOn ? "<b>🤖 大模型增强</b>（检索站内资料作上下文）" : "<b>⚡ 本地检索</b>（离线可用）"}
+      ｜ <a href="javascript:void 0" id="qa-toggle-settings">⚙️ 接入大模型</a></p>
+    <div class="card qa-settings" id="qa-settings" style="display:none">
+      <h3>⚙️ 接入大模型（可选）</h3>
+      <p class="muted">填入任意 <b>OpenAI 兼容接口</b>即可升级为 AI 回答：检索到的站内资料会作为上下文一起发给模型（RAG）。
+        密钥只保存在你自己浏览器的 localStorage，请求由浏览器直连服务商，本站没有服务器中转。
+        服务商需允许浏览器跨域调用；调用失败会自动回退本地回答。</p>
+      <p><label>接口地址 <input id="qa-set-base" type="text" value="${esc1(s.base)}" style="width:58%"></label></p>
+      <p><label>模型　　<input id="qa-set-model" type="text" value="${esc1(s.model)}"></label></p>
+      <p><label>API Key <input id="qa-set-key" type="password" value="${esc1(s.key)}" style="width:58%"></label></p>
+      <p><label><input id="qa-set-enabled" type="checkbox" ${s.enabled ? "checked" : ""}> 启用大模型增强</label>
+        　<button id="qa-set-save" class="run-btn">保存</button> <span id="qa-set-msg" class="muted"></span></p>
+    </div>
+    <div class="qa-log" id="qa-log"></div>
+    <div class="qa-chips">
+      ${["round(2.5) 为什么是 2？", "is 和 == 有什么区别？", "列表和元组的区别", "怎么读取文件？", "什么是装饰器？", "怎么安装第三方库？"].map((c) => `<button class="qa-chip">${c}</button>`).join("")}
+    </div>
+    <div class="qa-input-row">
+      <input id="qa-input" type="text" placeholder="输入 Python 问题，回车发送…" autocomplete="off">
+      <button id="qa-send" class="run-btn">发送</button>
+    </div>`;
+
+  const log = $app.querySelector("#qa-log");
+  const input = $app.querySelector("#qa-input");
+  const pushMsg = (role, html) => {
+    log.insertAdjacentHTML("beforeend",
+      role === "user" ? `<div class="qa-msg user"><span class="qa-bubble">${html}</span></div>` : `<div class="qa-msg ai">${html}</div>`);
+    if (role === "ai") bindRunners(log.lastElementChild);
+    log.lastElementChild.scrollIntoView({ block: "nearest" });
+  };
+  const send = async (qRaw) => {
+    const q = (qRaw || "").trim();
+    if (!q) return;
+    input.value = "";
+    pushMsg("user", esc1(q));
+    const cur = QA.llmSettings();
+    const hits = QA.retrieve(q, 3);
+    if (cur.enabled && cur.key) {
+      pushMsg("ai", `<span class="muted">🤖 思考中…</span>`);
+      const thinking = log.lastElementChild;
+      try {
+        const text = await QA.askLLM(q, hits);
+        const src = hits.filter((h) => h.score >= QA.MAYBE)
+          .map((h) => `<a href="${h.entry.url}">${h.entry.title}</a>`).join(" ｜ ");
+        thinking.innerHTML = QA.renderMd(text) + (src ? `<p class="muted">📚 依据资料：${src}</p>` : "");
+      } catch (e) {
+        thinking.innerHTML = `<p class="muted">⚠️ 大模型调用失败（${esc1(e && e.message || e)}），已回退本地回答：</p>` + qaLocalAnswer(q);
+      }
+      bindRunners(thinking);
+    } else {
+      pushMsg("ai", qaLocalAnswer(q));
+    }
+  };
+  $app.querySelector("#qa-send").addEventListener("click", () => send(input.value));
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") send(input.value); });
+  $app.querySelectorAll(".qa-chip").forEach((b) => b.addEventListener("click", () => send(b.textContent)));
+  $app.querySelector("#qa-toggle-settings").addEventListener("click", () => {
+    const p = $app.querySelector("#qa-settings");
+    p.style.display = p.style.display === "none" ? "" : "none";
+  });
+  $app.querySelector("#qa-set-save").addEventListener("click", () => {
+    QA.saveLlm({
+      enabled: $app.querySelector("#qa-set-enabled").checked,
+      base: $app.querySelector("#qa-set-base").value.trim() || "https://api.openai.com/v1",
+      model: $app.querySelector("#qa-set-model").value.trim() || "gpt-4o-mini",
+      key: $app.querySelector("#qa-set-key").value.trim(),
+    });
+    viewQA();
+  });
+  input.focus();
+}
+
 /* ---------- 路由 ---------- */
 function render() {
   renderModeSwitch();
@@ -597,6 +703,7 @@ function render() {
   else if (page === "playground") viewPlayground();
   else if (page === "errors") viewErrors();
   else if (page === "me") viewMe();
+  else if (page === "qa") viewQA();
   else if (page === "cheatsheet") { if (arg) viewCheatTopic(arg); else viewCheatsheet(); }
   else if (mode === "cheat") viewCheatsheet();
   else viewHome();

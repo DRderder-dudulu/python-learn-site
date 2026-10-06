@@ -68,5 +68,25 @@ CHEATSHEET_ADV.push({
 <li>官方教程（新手第一课）：<code>https://docs.python.org/zh-cn/3.14/tutorial/</code></li></ul>
 <p>相关 PEP：PEP 8（代码风格）、PEP 498（f-string）、PEP 572（海象）、PEP 634（match）、PEP 649/749（延迟注解）、PEP 695（泛型新语法）、PEP 696（类型参数默认值）、PEP 750（t-string）、PEP 758（except 无括号）、PEP 765（finally 警告）</p>`,
     },
+    {
+      id: "A_5", title: "§A.5 pip 与第三方库安装", desc: "pip install/uninstall/list/show、国内镜像加速、requirements.txt，以及虚拟环境 venv 的搭配使用",
+      html: `<p>第三方库用 <b>pip</b> 安装——pip 命令在<b>命令行</b>运行（不是 Python 代码）：</p>
+<table><tr><th>命令</th><th>作用</th></tr>
+<tr><td><code>pip install 库名</code></td><td>安装（如 <code>pip install requests</code>）</td></tr>
+<tr><td><code>pip install 库名==版本号</code></td><td>安装指定版本</td></tr>
+<tr><td><code>pip uninstall 库名</code></td><td>卸载</td></tr>
+<tr><td><code>pip list</code></td><td>查看已安装的库</td></tr>
+<tr><td><code>pip show 库名</code></td><td>查看某个库的详情</td></tr>
+<tr><td><code>pip install -i https://pypi.tuna.tsinghua.edu.cn/simple 库名</code></td><td>用国内镜像加速 ⭐</td></tr>
+<tr><td><code>pip install -r requirements.txt</code></td><td>按清单批量安装</td></tr></table>
+<p><b>虚拟环境 venv</b>：每个项目一套独立的库，互不污染。<code>python -m venv .venv</code> 创建 → 激活（Windows：<code>.venv\\Scripts\\activate</code>；macOS/Linux：<code>source .venv/bin/activate</code>）→ 之后 pip 装的库只属于本项目。</p>
+<p>装好后在代码里 <code>import 库名</code> 即可使用（模块机制见第六层）；遇到 <code>ModuleNotFoundError</code> 先查 §A.2 对应行。</p>`,
+      code: String.raw`# pip 命令要在命令行运行，这里用打印演示最常用的三条
+cmds = ["pip install requests", "pip list", "pip install -r requirements.txt"]
+for c in cmds:
+    print("$ " + c)  # 复制到命令行里即可执行
+# 装好之后：import requests 就能用了`,
+      expect: "$ pip install requests\n$ pip list\n$ pip install -r requirements.txt\n",
+    },
   ],
 });

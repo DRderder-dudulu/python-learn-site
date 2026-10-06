@@ -69,6 +69,21 @@ button.run-btn:hover, #judge-btn:hover { background: var(--primary-deep); border
 a.go-btn { display: inline-block; font-size: 14px; padding: 7px 16px; border: 1.5px solid var(--primary); border-radius: 10px; background: var(--primary); color: #fff; font-weight: 600; text-decoration: none; transition: all .15s ease-out; }
 a.go-btn:hover { background: var(--primary-deep); border-color: var(--primary-deep); color: #fff; }
 
+/* 问答页 */
+.qa-log { margin: 14px 0; }
+.qa-msg { margin: 10px 0; }
+.qa-msg.user { text-align: right; }
+.qa-bubble { display: inline-block; background: var(--primary-bg); color: var(--primary-deep); border-radius: 12px; padding: 8px 14px; max-width: 85%; text-align: left; }
+.qa-msg.ai { background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 12px 16px; box-shadow: var(--shadow); }
+.qa-msg.ai pre { background: var(--code-bg); color: var(--code-fg); border-radius: 8px; padding: 10px 12px; overflow-x: auto; }
+.qa-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.qa-chip { border: 1.5px solid var(--border); background: var(--card); border-radius: 999px; padding: 5px 12px; font-size: 13px; cursor: pointer; color: var(--fg); }
+.qa-chip:hover { border-color: var(--primary); color: var(--primary); }
+.qa-input-row { display: flex; gap: 8px; margin-top: 10px; }
+.qa-input-row input { flex: 1; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 15px; background: var(--card); color: var(--fg); }
+.qa-input-row input:focus { outline: none; border-color: var(--primary); }
+.qa-settings input[type="text"], .qa-settings input[type="password"] { padding: 6px 10px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--card); color: var(--fg); }
+
 .output { display: none; margin-top: 8px; background: #1B2925; color: #9FE8A9; padding: 10px 14px; border-radius: 10px; font-family: var(--font-mono); font-size: 13px; white-space: pre-wrap; }
 .output.show { display: block; }
 .output.err { color: #FF9C9C; }
