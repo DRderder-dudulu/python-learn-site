@@ -65,6 +65,10 @@ button:disabled { opacity: .5; cursor: wait; }
 button.run-btn, #judge-btn { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 600; }
 button.run-btn:hover, #judge-btn:hover { background: var(--primary-deep); border-color: var(--primary-deep); color: #fff; }
 
+/* 卡片上的「进入」按钮：与标题指向同一链接，主色实心，一眼可点 */
+a.go-btn { display: inline-block; font-size: 14px; padding: 7px 16px; border: 1.5px solid var(--primary); border-radius: 10px; background: var(--primary); color: #fff; font-weight: 600; text-decoration: none; transition: all .15s ease-out; }
+a.go-btn:hover { background: var(--primary-deep); border-color: var(--primary-deep); color: #fff; }
+
 .output { display: none; margin-top: 8px; background: #1B2925; color: #9FE8A9; padding: 10px 14px; border-radius: 10px; font-family: var(--font-mono); font-size: 13px; white-space: pre-wrap; }
 .output.show { display: block; }
 .output.err { color: #FF9C9C; }

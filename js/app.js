@@ -25,7 +25,7 @@ function renderModeSwitch() {
 
 /* ---------- 站点统一元信息：每页页脚自动展示 ---------- */
 const SITE_META = {
-  release: "v1.8",
+  release: "v1.9",
   versions: "Python 3.8—3.14",
   checked: "2026-09",
   doc: "https://docs.python.org/zh-cn/3/",
@@ -150,6 +150,7 @@ function viewHome() {
       <p class="muted">${l.goal}</p>
       <div class="progress"><i style="width:${pct}%"></i></div>
       <div class="progress-meta"><span>${doneSecs} / ${total} 节</span><span>自测最好成绩 ${Progress.getQuizScore(l.id)}/${l.quiz.length}</span></div>
+      <p><a class="go-btn" href="#/course/${l.id}">${doneSecs === 0 ? "开始学习 →" : doneSecs === total ? "复习一遍 →" : "继续学习 →"}</a></p>
     </div>`;
   }).join("");
   $app.innerHTML = `
@@ -267,12 +268,14 @@ function viewExercises() {
       const done = g.items.filter((ex) => Progress.exerciseState(ex.id) === "passed").length;
       return `<h2 class="cs-group">${g.title}（已通过 ${done}/${g.items.length}）</h2>` +
         g.items.map((ex) => {
-          const [txt, cls] = stateMap[Progress.exerciseState(ex.id)];
+          const st = Progress.exerciseState(ex.id);
+          const [txt, cls] = stateMap[st];
           return `<div class="card">
       <h3><a href="#/exercise/${ex.id}">${ex.title}</a>
         <span class="stars">${"★".repeat(ex.diff)}${"☆".repeat(3 - ex.diff)}</span></h3>
       <p class="muted">${ex.brief}</p>
-      <span class="${cls}">${txt}</span> <span class="badge">${ex.point}</span>
+      <p><span class="${cls}">${txt}</span> <span class="badge">${ex.point}</span>
+        <a class="go-btn" href="#/exercise/${ex.id}">${st === "passed" ? "再做一遍 →" : "开始做题 →"}</a></p>
     </div>`;
         }).join("");
     }).join("");
@@ -512,6 +515,7 @@ function viewCheatsheet() {
         <div class="card topic-card" data-tid="${t.id}">
           <h3><a href="#/cheatsheet/${t.id}">${t.title}</a></h3>
           <p class="muted">${t.desc}</p>
+          <p><a class="go-btn" href="#/cheatsheet/${t.id}">查看 →</a></p>
         </div>`).join("") + `</div>
     </details>`;
   let html = `
