@@ -40,7 +40,12 @@ const PyRunner = (() => {
         return pyodide;
       })();
     }
-    await loadingPromise;
+    try {
+      await loadingPromise;
+    } catch (e) {
+      loadingPromise = null;   // 加载失败（如断网）后允许下次点击重试，不再永久卡在 rejected 状态
+      throw e;
+    }
     return pyodide;
   }
 

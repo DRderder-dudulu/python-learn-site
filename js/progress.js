@@ -23,11 +23,21 @@ const Progress = (() => {
     }
   }
   function save() {
-    localStorage.setItem(KEY, JSON.stringify(cache));
+    try {
+      localStorage.setItem(KEY, JSON.stringify(cache));
+    } catch {
+      /* 存储被禁用或已满时静默降级：本次进度只保留在内存，不打断交互 */
+    }
   }
 
   /* ---- 课程小节 ---- */
   function markSection(secId) { cache.sections[secId] = true; save(); }
+  function toggleSection(secId) {
+    if (cache.sections[secId]) delete cache.sections[secId];
+    else cache.sections[secId] = true;
+    save();
+    return !!cache.sections[secId];
+  }
   function isSectionDone(secId) { return !!cache.sections[secId]; }
 
   /* ---- 章节测验 ---- */
@@ -86,7 +96,7 @@ const Progress = (() => {
   }
 
   return {
-    markSection, isSectionDone, setQuizScore, getQuizScore,
+    markSection, toggleSection, isSectionDone, setQuizScore, getQuizScore,
     markExercise, exerciseState, wrongList, removeWrong,
     markError, isErrorDone, toggleProjCheck, projChecks,
     stats, reset,

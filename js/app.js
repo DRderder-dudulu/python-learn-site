@@ -25,7 +25,7 @@ function renderModeSwitch() {
 
 /* ---------- 站点统一元信息：每页页脚自动展示 ---------- */
 const SITE_META = {
-  release: "v1.6",
+  release: "v1.7",
   versions: "Python 3.8—3.14",
   checked: "2026-09",
   doc: "https://docs.python.org/zh-cn/3/",
@@ -172,13 +172,13 @@ function viewCourse(id) {
   layer.sections.forEach((sec) => {
     const done = Progress.isSectionDone(layer.id + "-" + sec.id);
     html += `<div class="card">
-      <h3>§${sec.id} ${sec.title} ${done ? "✅" : ""}</h3>
+      <h3>§${sec.id} ${sec.title} ${done ? '<span class="sec-check">✅</span>' : ""}</h3>
       <p class="muted">${sec.ver ? `适用版本：${sec.ver} ｜ ` : ""}<a href="${sec.doc}" target="_blank" rel="noopener">官方文档 ↗</a> ｜ 对应指南 §${sec.id}</p>
       <ul>${sec.points.map((p) => `<li>${p}</li>`).join("")}</ul>
       ${codeBlockHTML(sec.code)}
       ${sec.expect ? `<p class="muted">预期输出：</p><pre class="expect"></pre>` : ""}
       ${sec.note ? `<p class="muted">${sec.note}</p>` : ""}
-      <button class="sec-done-btn" data-sec="${layer.id}-${sec.id}">我学会了</button>
+      <button class="sec-done-btn${done ? " done" : ""}" data-sec="${layer.id}-${sec.id}">${done ? "✅ 已学会（点击撤销）" : "我学会了"}</button>
     </div>`;
   });
   html += `<div class="card"><h3>本章自测（答对 ≥2 题算通过）</h3><div id="quiz"></div></div>
@@ -201,8 +201,14 @@ function viewCourse(id) {
 
   $app.querySelectorAll(".sec-done-btn").forEach((b) =>
     b.addEventListener("click", () => {
-      Progress.markSection(b.dataset.sec);
-      viewCourse(id); // 重新渲染显示 ✅
+      const nowDone = Progress.toggleSection(b.dataset.sec);
+      // 就地更新，不整页重渲染：保留滚动位置与代码编辑器里改过的内容，点击立刻有反馈
+      b.classList.toggle("done", nowDone);
+      b.textContent = nowDone ? "✅ 已学会（点击撤销）" : "我学会了";
+      const h3 = b.closest(".card").querySelector("h3");
+      const check = h3.querySelector(".sec-check");
+      if (nowDone && !check) h3.insertAdjacentHTML("beforeend", ' <span class="sec-check">✅</span>');
+      else if (!nowDone && check) check.remove();
     })
   );
   renderQuiz(layer);
@@ -594,3 +600,15 @@ function render() {
 }
 window.addEventListener("hashchange", render);
 render();
+
+/* Python 环境预热：页面打开后利用浏览器空闲时间后台加载 Pyodide，首次点「运行」基本零等待 */
+if ("requestIdleCallback" in window) {
+  requestIdleCallback(() => PyRunner.ensure().catch(() => {}), { timeout: 5000 });
+} else {
+  setTimeout(() => PyRunner.ensure().catch(() => {}), 2000);
+}
+
+/* Pyodide 运行时持久缓存：仅在线（http/https）访问时注册 Service Worker，file:// 本地打开自动跳过 */
+if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
