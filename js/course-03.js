@@ -17,6 +17,7 @@ COURSE.push({
   sections: [
     {
       id: "3.1", title: "列表：增删改查",
+      what: "列表是有顺序的一排格子，用方括号写、按下标取，里面的东西随时能加能改。",
       use: "装一串会变化的数据——名单、成绩、购物车——列表是最常用的容器。往里面加、删、改、查、排序的基本操作，全在这节。",
       doc: "https://docs.python.org/zh-cn/3.14/library/stdtypes.html#lists",
       points: [
@@ -57,6 +58,7 @@ print(b is a, c is a)`,
     },
     {
       id: "3.2", title: "元组：不可变序列",
+      what: "元组是加了锁的列表：圆括号包起来，写定之后一个元素都不许改，改了直接报错。",
       use: "数据不想被任何人改动时用元组：改一下就报错，天然安全。函数一次返回多个结果、拿坐标当字典键，背后都是它。",
       doc: "https://docs.python.org/zh-cn/3.14/library/stdtypes.html#tuples",
       points: [
@@ -86,6 +88,7 @@ print(point[(0, 0)])`,
     },
     {
       id: "3.3", title: "字典：键值对",
+      what: "字典是一对一对存数据的容器：花括号里写「键: 值」，找东西时报键名，立刻拿到对应的值。",
       use: "按「名字」查「内容」的数据用字典存：按用户名查年龄、按学号查成绩，一一对应的查找关系就该想到它。",
       doc: "https://docs.python.org/zh-cn/3.14/library/stdtypes.html#mapping-types-dict",
       points: [
@@ -116,6 +119,7 @@ print(merged)`,
     },
     {
       id: "3.4", title: "集合：去重与运算",
+      what: "集合是一堆不重复、无顺序的值：重复元素只保留一个；空集合要写 set()，{} 是空字典。",
       use: "要自动去重，或求两批数据的交集、差集（比如「两人共同加过的群」），集合最顺手；要反复判断「在不在里面」，先转 set 再查快得多。",
       doc: "https://docs.python.org/zh-cn/3.14/library/stdtypes.html#set-types-set-frozenset",
       points: [
@@ -146,6 +150,7 @@ print(d[frozen])`,
     },
     {
       id: "3.5", title: "字符串方法分组",
+      what: "字符串方法是对字符串做小加工的工具：strip 切边、split 切开、join 拼合，全都返回新串、不改原串。",
       use: "处理文字的日常工具箱：去两端空白、按逗号切开、再拼回去、找子串。清洗用户输入、处理文本内容时，这组方法出现率最高。",
       doc: "https://docs.python.org/zh-cn/3.14/library/stdtypes.html#string-methods",
       points: [
@@ -173,6 +178,7 @@ print("hello".find("zz"))    # find 找不到给 -1，不报错
     },
     {
       id: "3.6", title: "切片",
+      what: "切片就是给序列「剪一段」的方括号写法：三个位置用冒号隔开，分别管从哪开始、到哪停、隔几个取。",
       use: "从序列里截取一段：取前三个、隔一个取一个、整体倒过来，都写成 s[起:止:步长]。字符串、列表、元组通用。",
       doc: "https://docs.python.org/zh-cn/3.14/library/stdtypes.html#common-sequence-operations",
       points: [
@@ -197,6 +203,7 @@ print(copy, nums)            # 副本不跟着变`,
     },
     {
       id: "3.7", title: "序列解包",
+      what: "解包是一次性给多个变量赋值的写法：等号左边排几个名字，右边放一串值，按位置一一对上。",
       use: "把一串值一次性拆进多个变量，不用按下标一个个取；带 * 的变量还能把剩余元素一网打尽。遍历字典的键值对，用的就是它。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/datastructures.html#tuples-and-sequences",
       points: [
@@ -224,6 +231,7 @@ for k, v in d.items():       # 遍历 d.items() 就是解包的日常
     },
     {
       id: "3.8", title: "del 语句",
+      what: "del 是语句不是函数：后面直接跟要删的目标（名字、下标、切片、键），不用加括号。",
       use: "专门负责删除的语句：删变量名、删列表元素、删切片、删字典键都靠它。del 只是摘掉名字，对象还有人用就不会消失。",
       doc: "https://docs.python.org/zh-cn/3.14/reference/simple_stmts.html#the-del-statement",
       points: [

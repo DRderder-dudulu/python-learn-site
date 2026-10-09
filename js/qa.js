@@ -162,13 +162,13 @@ const QA = (() => {
           title: "§" + sec.id + " " + sec.title,
           url: "#/course/" + l.id,
           desc: "课程 · " + l.title,
-          body: (sec.use || "") + " " + pts + " " + (sec.note || ""),
+          body: (sec.what || "") + " " + (sec.use || "") + " " + pts + " " + (sec.note || ""),
           code: sec.code || "",
           html: "",
           points: sec.points || [],
           titleL: norm(sec.title + " " + l.title),
           descL: norm(l.title + " " + l.goal),
-          bodyL: norm((sec.use || "") + " " + pts + " " + (sec.note || "")),
+          bodyL: norm((sec.what || "") + " " + (sec.use || "") + " " + pts + " " + (sec.note || "")),
           codeL: norm(sec.code || ""),
         });
       });

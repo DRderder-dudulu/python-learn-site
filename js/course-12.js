@@ -17,6 +17,7 @@ COURSE.push({
   sections: [
     {
       id: "12.1", title: "函数即对象：装饰器的地基",
+      what: "Python 里函数也是普通对象：能赋给变量、当参数和返回值传来传去；内层函数记住外层变量，就叫「闭包」。",
       use: "函数能赋给变量、当参数传、还能记住外层变量（闭包）。这三板斧不熟，后面的装饰器看一百遍也像黑魔法。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/controlflow.html#defining-functions",
       points: [
@@ -49,6 +50,7 @@ print(add3(10))
     },
     {
       id: "12.2", title: "最简装饰器：@ 只是语法糖",
+      what: "装饰器就是一个「收函数、返回新函数」的函数；@ 写在 def 上面，只是替你省掉一句手动赋值的语法糖。",
       use: "想给一批函数统一加「前后动作」（打日志、计时）又不改动原函数，就用 @。它完全等价于 f = deco(f)，没有黑魔法。",
       doc: "https://docs.python.org/zh-cn/3.14/glossary.html#term-decorator",
       points: [
@@ -87,6 +89,7 @@ print(core())`,
     },
     {
       id: "12.3", title: "functools.wraps：别把原函数弄丢",
+      what: "@functools.wraps(func) 是个小装饰器：把原函数的名字、文档等元信息复制回 wrapper，包装后不露馅。",
       use: "自己写装饰器时的必带配件：少了它，被装饰函数的名字和文档全丢，help() 一看就露馅。wrapper 里配 *args、**kwargs 通吃任意参数。",
       doc: "https://docs.python.org/zh-cn/3.14/library/functools.html#functools.wraps",
       points: [
@@ -121,6 +124,7 @@ print(add.__doc__)     # 有 wraps：文档字符串还在
     },
     {
       id: "12.4", title: "带参数的装饰器：三层套娃",
+      what: "装饰器本身也要收参数时，就在外面再套一层函数：@repeat(3) 先调用 repeat(3) 拿到真装饰器，再去装饰。",
       use: "想让装饰器本身也能收参数（比如 @repeat(3) 控制重复几次）时，就在外面再套一层。看到三层嵌套别慌，就是参数层、装饰层、包装层这个套路。",
       doc: "https://docs.python.org/zh-cn/3.14/glossary.html#term-decorator",
       points: [
@@ -151,6 +155,7 @@ hi("小明")`,
     },
     {
       id: "12.5", title: "@contextmanager：用生成器写 with",
+      what: "@contextmanager 让你用一个带 yield 的生成器函数发明 with 语句：yield 前是进入逻辑，yield 后是收尾。",
       use: "想自己发明一个 with 语句（进入时做准备、退出时必收尾）时用。写一个带 yield 的函数就行，不必手写 __enter__/__exit__ 的类。",
       doc: "https://docs.python.org/zh-cn/3.14/library/contextlib.html#contextlib.contextmanager",
       points: [
@@ -181,6 +186,7 @@ with banner() as v:
     },
     {
       id: "12.6", title: "内置好帮手：suppress 与 redirect_stdout",
+      what: "contextlib 里两个现成的上下文管理器：suppress 吞掉指定异常、redirect_stdout 截获输出，直接 with 就能用。",
       use: "两个即取即用的现成工具：某些异常「知道了、不用管」时用 suppress 安静跳过；想抓住 print 的输出做测试，用 redirect_stdout。",
       doc: "https://docs.python.org/zh-cn/3.14/library/contextlib.html",
       points: [

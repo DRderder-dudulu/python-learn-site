@@ -17,6 +17,7 @@ COURSE.push({
   sections: [
     {
       id: "5.1", title: "try / except / else / finally",
+      what: "try 是给可能出错的代码围一圈护栏：except 在出错时接住，else 在顺利时执行，finally 不管出不出错都会跑。",
       use: "程序可能出错的地方（比如解析用户输入）用它兜底：出错给个交代，而不是直接崩溃。清理动作放 finally，异常要抓具体的，别一把全吞。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/errors.html",
       points: [
@@ -61,7 +62,8 @@ print(demo())`,
     },
     {
       id: "5.2", title: "异常对象与 raise",
-      use: "数据不对时主动报错（raise），比默默返回错误值强。想先记日志再把问题往上交就裸 raise 重抛；raise ... from e 能把底层原因一起带上。",
+      what: "异常对象就是出错时生成的「事故报告」，except X as e 能拿到它；raise 则是你主动扔出一份报告，当场喊停。",
+      use: "数据不对时主动报错（raise），比默默返回错误值强。想记完日志再往上交，就写裸 raise 重抛；raise ... from e 能把底层原因一起带上。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/errors.html#raising-exceptions",
       points: [
         "except X as e 拿到异常对象：e.args 是构造参数",
@@ -104,6 +106,7 @@ except RuntimeError as e:
     },
     {
       id: "5.3", title: "常见内置异常速查",
+      what: "内置异常是 Python 预先定义好的错误类型，名字上就写着病因：TypeError 是类型不对，ValueError 是值不对。",
       use: "报错看不懂时回这节对号入座：异常名基本就告诉你是哪一类错。顺便弄清为什么 except Exception 不会误吞 Ctrl+C。",
       doc: "https://docs.python.org/zh-cn/3.14/library/exceptions.html",
       points: [
@@ -143,6 +146,7 @@ print(issubclass(SystemExit, Exception))         # False
     },
     {
       id: "5.4", title: "自定义异常",
+      what: "自定义异常是你照着内置异常的样子造的新错误类型：继承 Exception，起个见名知意的类名就行。",
       use: "内置异常说不清业务错误时（比如「用户不存在」），就自己定义一个，调用方一看名字就知道该抓什么。项目里通常集中放在一个 exceptions.py。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/errors.html#user-defined-exceptions",
       points: [
@@ -175,7 +179,8 @@ except AppError as e:                   # 子类异常也会被基类的 except 
     },
     {
       id: "5.5", title: "assert 断言",
-      use: "写代码时自查「这里肯定成立」的假设用 assert，写测试最常用。但校验用户输入别靠它——它会被 -O 模式整个删掉，正式校验用 if + raise。",
+      what: "assert 断言是写进代码的一句「我断定这里成立」：条件不成立，就立刻抛 AssertionError，把问题当场喊出来。",
+      use: "写代码时要自查「这里肯定成立」的假设，就用 assert——写测试最常用。但校验用户输入别靠它：它会被 -O 模式整个删掉，正式校验用 if + raise。",
       doc: "https://docs.python.org/zh-cn/3.14/reference/simple_stmts.html#the-assert-statement",
       points: [
         "assert 条件, \"消息\"——条件不成立抛 AssertionError",
@@ -208,6 +213,7 @@ except ValueError as e:
     },
     {
       id: "5.6", title: "最佳实践：EAFP 风格",
+      what: "EAFP 是「做了再求原谅，好过事先求许可」的缩写：代码直接动手，靠 except 收拾意外，而不是先查一堆条件。",
       use: "Python 的地道风格：先做再说，出错再处理，而不是先问「能不能做」。简单场景可以更省事，比如 d.get 代替 try/except KeyError。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/errors.html",
       points: [

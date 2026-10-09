@@ -17,6 +17,7 @@ COURSE.push({
   sections: [
     {
       id: "8.1", title: "open 与 with 三件套",
+      what: "「三件套」指：用 with 自动关文件、写 encoding=utf-8 防乱码、读写都在 with 块内完成。",
       use: "读写文本文件的标配动作。要存结果、读配置、处理日志文件时，就照这三件套写，既不漏关文件也不怕中文乱码。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/inputoutput.html#reading-and-writing-files",
       points: [
@@ -51,6 +52,7 @@ with open("demo.txt", encoding="utf-8") as f:
     },
     {
       id: "8.2", title: "pathlib（现代推荐）",
+      what: "pathlib 是自带的路径库，把路径包装成 Path 对象：拼接用 /，读写、找文件都是它身上的方法。",
       use: "拼路径、建目录、按模式找文件、拆文件名，都归它管。要写「处理某个文件夹里所有 .txt」这类脚本时，比手拼路径字符串省心得多。",
       doc: "https://docs.python.org/zh-cn/3.14/library/pathlib.html",
       points: [
@@ -77,7 +79,8 @@ print(p.exists())`,
     },
     {
       id: "8.3", title: "多上下文管理器",
-      use: "要同时开着好几个文件时用——典型场景是边读一个边写另一个。一个 with 全管好，全都正常关闭。",
+      what: "with 后面可以用逗号隔开好几个资源一起管：with A() as a, B() as b:——3.10 起还能加括号换行写。",
+      use: "要同时开着好几个文件时用——典型场景是边读一个边写另一个。一个 with 把它们全管好，结束时全都正常关闭。",
       doc: "https://docs.python.org/zh-cn/3.14/reference/compound_stmts.html#the-with-statement",
       points: [
         "一个 with 管多个资源：with A() as a, B() as b:",
@@ -102,6 +105,7 @@ with open("out.txt", encoding="utf-8") as f:
     },
     {
       id: "8.4", title: "文件与目录的其他操作",
+      what: "os、shutil、pathlib 里的文件操作小工具合集：复制、移动、重命名、删除各有一个现成函数，对号调用即可。",
       use: "复制、移动、重命名、删除文件时来这里抄。删整个目录树的 rmtree 不可恢复，批量动手前先 print 一遍名单确认。",
       doc: "https://docs.python.org/zh-cn/3.14/library/shutil.html",
       points: [

@@ -18,6 +18,7 @@ COURSE.push({
   sections: [
     {
       id: "18.1", title: "虚拟环境与 pip：给每个项目一座独立厨房",
+      what: "虚拟环境是给一个项目单独配的 Python 小环境，像独立厨房；pip 是装包、升级、卸载的命令行工具。",
       use: "装第三方包之前先做这一步：给每个项目单独配一个环境，各装各的互不污染。要装库、升级、卸载，或明明装好了程序却找不到（八成装错解释器）时，按这节的命令来。",
       doc: "https://docs.python.org/zh-cn/3.14/library/venv.html",
       points: [
@@ -49,7 +50,8 @@ print("Python 大版本：", sys.version_info.major)`,
     },
     {
       id: "18.2", title: "requirements 与依赖管理：给环境「拍照存档」",
-      use: "把依赖写进 requirements.txt，换机器或部署时一条命令复现环境。交付、或 import 报「找不到模块」却装过（安装名≠导入名）时，看这节。",
+      what: "requirements.txt 是一个纯文本清单，一行一个「库名==版本号」，记录这个项目到底依赖哪些库。",
+      use: "把依赖写进 requirements.txt，换机器或部署时一条命令复现环境。要交付了，或 import 报「找不到模块」、明明装过却不行（安装名≠导入名）时，看这节。",
       doc: "https://docs.python.org/zh-cn/3.14/installing/index.html",
       points: [
         "<code>pip freeze > requirements.txt</code> 把当前环境所有库和版本写进清单——像给环境拍照",
@@ -79,6 +81,7 @@ for name in ["pip", "json"]:
     },
     {
       id: "18.3", title: "项目目录结构：给代码一个像样的家",
+      what: "项目骨架是一套目录结构约定：源码、测试、配置文件各就各位，而不是全堆在一个文件夹里。",
       use: "脚本堆一个文件夹、三个月后不敢动，就该立骨架。照这节搭：pyproject.toml 当身份证、src/ 放源码、tests/ 放测试，pytest 默认就认。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/modules.html#packages",
       points: [
@@ -111,6 +114,7 @@ for p in sorted(root.rglob("*")):
     },
     {
       id: "18.4", title: "logging 日志：别再到处 print 调试",
+      what: "logging 是自带的日志模块：替程序记运行日记，消息分 DEBUG 到 CRITICAL 五级，想看哪级就设哪级。",
       use: "print 排查完得挨个删，logging 分级记录、一键开关才是正路。程序要长期跑、想留下出错现场，或让报错自动带上堆栈，就用它。",
       doc: "https://docs.python.org/zh-cn/3.14/library/logging.html",
       points: [
@@ -148,7 +152,8 @@ except ZeroDivisionError:
     },
     {
       id: "18.5", title: "调试三板斧：断言、print 与 pdb 思路",
-      use: "程序出错找不到原因？先复现、再缩小范围：assert 守底线、print 二分定位、pdb 单步。python -O 会删掉所有 assert，不能当输入校验。",
+      what: "assert 是写进代码的「底线检查」，条件不成立就当场报错；pdb 是命令行里的单步调试器，逐行走查。",
+      use: "程序出错找不到原因？先复现、再缩小范围：assert 守底线，print 二分定位，pdb 单步慢查。注意 python -O 会删掉所有 assert，所以它不能当输入校验用。",
       doc: "https://docs.python.org/zh-cn/3.14/library/pdb.html",
       points: [
         "<code>assert 条件, \"出错说明\"</code>：守住「绝不该发生」的底线，一破就当场爆炸",
@@ -181,6 +186,7 @@ for i in range(3):
     },
     {
       id: "18.6", title: "pytest 测试入门：让机器替你检查",
+      what: "pytest 是最常用的 Python 测试框架：按约定写好 test_ 开头的文件和函数，它自动找出来全跑并报告结果。",
       use: "手动点一遍验证太原始：写成测试，以后每改一次自动全跑，挂了立刻标红。按「文件 test_*.py、函数 test_*、断言用普通 assert」的约定上手。",
       doc: "https://docs.pytest.org/en/stable/",
       points: [

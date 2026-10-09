@@ -19,6 +19,7 @@ COURSE.push({
   sections: [
     {
       id: "20.1", title: "文件批处理：新手的第一个作品",
+      what: "文件批处理就是让程序替你批量收拾文件；这节的小项目是把「下载」文件夹里的图片自动归档进子文件夹。",
       use: "整理乱糟糟的下载文件夹：按类型归档、批量改名、清理重复，几行标准库代码搞定。批量动手前先把 move 换成 print 演练，确认清单无误再放行。",
       doc: "https://docs.python.org/zh-cn/3.14/library/pathlib.html",
       points: [
@@ -52,6 +53,7 @@ for p in sorted(d.rglob("*")):
     },
     {
       id: "20.2", title: "文本与日志分析：从几千行里捞信息",
+      what: "日志分析就是从几千行文本里按规矩捞信息；这节用 re 抓出各级别、Counter 自动数数，统计一份小日志。",
       use: "几千行日志肉眼翻不动：re 抓目标、Counter 自动数数，几秒统计出「哪种报错最多」、捞出全部 ERROR 行。排查、分析聊天记录或账单都用这套。",
       doc: "https://docs.python.org/zh-cn/3.14/library/re.html",
       points: [
@@ -87,7 +89,8 @@ for line in log.splitlines():
     },
     {
       id: "20.3", title: "数据格式与小型数据库",
-      use: "存配置、读表格、换数据靠 JSON 和 csv（导出中文用 ensure_ascii=False）；按条件查，标准库自带 sqlite3，零安装当单文件数据库。",
+      what: "JSON 和 csv 是程序之间交换数据的通用格式，sqlite3 是标准库自带的单文件数据库；这节练它们的存和取。",
+      use: "存配置、读表格、换数据靠 JSON 和 csv（导出中文用 ensure_ascii=False）；想按条件查询，就用标准库自带的 sqlite3，零安装当单文件数据库。",
       doc: "https://docs.python.org/zh-cn/3.14/library/json.html",
       points: [
         "⭐ <code>json.dumps(data, ensure_ascii=False)</code>：不加这个参数，中文会变 \\uXXXX 转义",
@@ -125,7 +128,8 @@ con.close()`,
     },
     {
       id: "20.4", title: "网络请求思路：先学原理，再装 requests",
-      use: "写爬虫调接口前，练 URL 基本功：urlparse 拆零件、urlencode 拼参数。发请求用 requests；联网守 robots.txt 和频率限制。",
+      what: "一个 URL 其实由协议、域名、路径、参数这些零件拼成；这节练用 urlparse 把它拆开、用 urlencode 把参数拼回去。",
+      use: "写爬虫调接口前，练 URL 基本功：urlparse 拆零件、urlencode 拼参数。发请求用 requests；联网时记得守 robots.txt 和频率限制。",
       doc: "https://docs.python.org/zh-cn/3.14/library/urllib.parse.html",
       points: [
         "标准库 <code>urllib</code> 能发 HTTP 请求；日常更推荐第三方 <code>requests</code>，语法更顺手",
@@ -155,6 +159,7 @@ print(params)`,
     },
     {
       id: "20.5", title: "把脚本做成 CLI 工具",
+      what: "CLI 工具就是在命令行里敲「python 脚本名 参数」来运行的程序；argparse 负责把敲进来的参数解析、校验好。",
       use: "把脚本变成命令行工具：不改代码就能换输入。argparse 管解析、类型校验、自动生成 -h 帮助；sys.argv 认得就行（取到的全是字符串）。",
       doc: "https://docs.python.org/zh-cn/3.14/library/argparse.html",
       points: [

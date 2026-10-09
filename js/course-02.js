@@ -17,6 +17,7 @@ COURSE.push({
   sections: [
     {
       id: "2.1", title: "if / elif / else",
+      what: "if 是分支语句：条件成立就执行它后面缩进的代码块；要分更多情况用 elif 接着判断，else 兜底。",
       use: "让程序分情况办事：条件成立走这条分支，不成立走那条。凡是「如果…就…否则…」的判断都靠它；>= 60 含不含 60 这种边界最要想清楚。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/controlflow.html#if-statements",
       points: [
@@ -42,6 +43,7 @@ print(60 >= 60, 59 >= 60)    # ⭐ 边界值要想清楚：>= 60 含 60；59 才
     },
     {
       id: "2.2", title: "while 循环与 else 子句",
+      what: "while 是条件循环：条件还成立就再执行一遍缩进的代码，不成立才停；循环没被 break 打断时，else 才执行。",
       use: "不知道要循环几次、只知道什么条件下该停，就用 while。中途收工（break）、跳过某轮（continue）、「找了一圈没找到」（else），这节全包了。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/controlflow.html",
       points: [
@@ -73,6 +75,7 @@ else:                        # 循环【没被 break 打断】才执行——天
     },
     {
       id: "2.3", title: "for 循环与 range",
+      what: "for 是遍历循环：序列里的元素挨个取一遍，每取到一个就把缩进的代码执行一次；range 则生成一串整数。",
       use: "把列表、字符串里的元素一个个取出来处理，就用 for。要数数（range）、想要序号（enumerate）、两列一起走（zip），都是它的日常搭档。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/controlflow.html#for-statements",
       points: [
@@ -107,6 +110,7 @@ print(evens)`,
     },
     {
       id: "2.4", title: "match 结构化模式匹配",
+      what: "match 是模式匹配语句：把数据跟每个 case 的「形状」挨个比对，对上哪个执行哪个，还能顺手拆出里面的值。",
       use: "按「数据的形状」分情况处理：命令是「go north」还是「quit」，match 匹配结构、顺便拆值，省掉一长串 if/elif。3.10 及以上才能用。",
       ver: "3.10+",
       doc: "https://docs.python.org/zh-cn/3.14/reference/compound_stmts.html#the-match-statement",

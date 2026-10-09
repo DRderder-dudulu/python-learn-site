@@ -25,7 +25,7 @@ function renderModeSwitch() {
 
 /* ---------- 站点统一元信息：每页页脚自动展示 ---------- */
 const SITE_META = {
-  release: "v2.1",
+  release: "v2.2",
   versions: "Python 3.8—3.14",
   checked: "2026-10",
   doc: "https://docs.python.org/zh-cn/3/",
@@ -175,7 +175,7 @@ function viewCourse(id) {
     html += `<div class="card">
       <h3>§${sec.id} ${sec.title} ${done ? '<span class="sec-check">✅</span>' : ""}</h3>
       <p class="muted">${sec.ver ? `适用版本：${sec.ver} ｜ ` : ""}<a href="${sec.doc}" target="_blank" rel="noopener">官方文档 ↗</a> ｜ 对应指南 §${sec.id}</p>
-      ${sec.use ? `<p class="use-box">💡 <b>什么时候用：</b>${sec.use}</p>` : ""}
+      ${(sec.what || sec.use) ? `<div class="use-box">${sec.what ? `<p>📘 <b>是什么：</b>${sec.what}</p>` : ""}${sec.use ? `<p>💡 <b>什么时候用：</b>${sec.use}</p>` : ""}</div>` : ""}
       <ul>${sec.points.map((p) => `<li>${p}</li>`).join("")}</ul>
       ${codeBlockHTML(sec.code)}
       ${sec.expect ? `<p class="muted">预期输出：</p><pre class="expect"></pre>` : ""}

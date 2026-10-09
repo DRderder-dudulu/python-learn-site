@@ -17,6 +17,7 @@ COURSE.push({
   sections: [
     {
       id: "14.1", title: "同步 vs 异步：先建立正确认知",
+      what: "同步是一件做完才做下一件；异步是谁在等（网络、磁盘）谁就让出控制权，一个线程也能同时推进多件事。",
       use: "先判断你的活适不适合异步：爬虫、API 这类网络活提速明显，压缩、计算等 CPU 活白搭（multiprocessing 的地盘）。写 async 前看这节。",
       doc: "https://docs.python.org/zh-cn/3.14/library/asyncio.html",
       points: [
@@ -49,6 +50,7 @@ asyncio.run(main())`,
     },
     {
       id: "14.2", title: "async def 与 await：协程不是调用就跑",
+      what: "协程是可以中途暂停、再接着跑的函数，前面加 async 就定义了一个；await 负责等它跑完、取回结果。",
       use: "调了 async 函数却没动静？那只是协程对象，得靠 await 或 asyncio.run 才执行。撞上「was never awaited」警告时回这节。",
       doc: "https://docs.python.org/zh-cn/3.14/library/asyncio-task.html#coroutines",
       points: [
@@ -78,7 +80,8 @@ asyncio.run(main())     # 顶层入口交给 asyncio.run`,
     },
     {
       id: "14.3", title: "asyncio.run 与 gather：一起出发",
-      use: "让多个异步任务同时起跑：asyncio.run 开门，gather 发令，全部完成后按传入顺序收结果。要并发请求一批接口、或疑惑「总耗时怎么不是相加」时用它。",
+      what: "asyncio.run 是异步程序的总入口；gather 像发令枪：几个协程一起出发，跑完后按传入顺序收结果。",
+      use: "要同时跑多个协程时用它：比如一次并发请求 5 个接口，总耗时约等于最慢的那个，而不是挨个相加。想不通「为什么不是相加」时回这节。",
       doc: "https://docs.python.org/zh-cn/3.14/library/asyncio-task.html#asyncio.gather",
       points: [
         "<code>asyncio.run(main())</code> 是程序入口：启动事件循环，跑完 main 再收尾",
@@ -107,7 +110,8 @@ asyncio.run(main())     # 程序入口：启动事件循环，跑完 main 再收
     },
     {
       id: "14.4", title: "async with 与 async for：异步世界的配套语法",
-      use: "异步世界管资源、取数据的写法：连接交给 async with 自动开关，分页等网络的数据用 async for 逐条取。用异步库的连接或翻页接口时会碰到。",
+      what: "async with、async for 是异步版的 with 和 for：写法多个 async，专管要等网络的连接和分页数据。",
+      use: "在异步世界里管资源、取数据就靠这两样：连接交给 async with 自动开关，要等网络的分页数据用 async for 逐条取。用异步库的连接或翻页接口时会碰到。",
       doc: "https://docs.python.org/zh-cn/3.14/reference/compound_stmts.html#the-async-with-statement",
       points: [
         "异步资源（连接、会话）用 <code>async with</code> 管理：进入走 <code>__aenter__</code>，离开走 <code>__aexit__</code>",
@@ -149,7 +153,8 @@ asyncio.run(main())`,
     },
     {
       id: "14.5", title: "常见误区：忘记 await 与阻塞调用",
-      use: "异步两大翻车点：忘了 await；协程里调 time.sleep、requests 卡死事件循环。结果不对或变慢照这节查；阻塞库交给 to_thread。",
+      what: "阻塞调用是 time.sleep、requests 这类「干等不让路」的函数：协程里调了它，所有协程都陪着卡住。",
+      use: "异步两大翻车点：一是忘了 await，二是在协程里调 time.sleep、requests 把事件循环卡死。结果不对或莫名变慢时照这节查；躲不开的阻塞库就交给 to_thread。",
       doc: "https://docs.python.org/zh-cn/3.14/library/asyncio-dev.html",
       points: [
         "⭐ 忘了 await：拿到的是<b>协程对象</b>而不是结果——结果对不上先查这个",

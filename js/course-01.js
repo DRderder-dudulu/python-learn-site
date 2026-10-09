@@ -17,6 +17,7 @@ COURSE.push({
   sections: [
     {
       id: "1.1", title: "注释与文档字符串",
+      what: "注释是写给人看的说明，解释器会直接跳过；放在函数、类开头的说明字符串叫 docstring，help() 读的就是它。",
       use: "写给人看的说明。代码稍一复杂，就要靠注释说清「为什么这样写」；docstring 写好了，help() 和编辑器才能给你提示。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/introduction.html",
       points: [
@@ -44,6 +45,7 @@ print(add.__doc__)   # help() 读到的就是它`,
     },
     {
       id: "1.2", title: "标识符与关键字",
+      what: "标识符是你自己起的名字（变量名、函数名）；关键字是 Python 预留的词（if、for 这些），不能拿来当名字用。",
       use: "给变量、函数起名字的规则。起名报错，或是不小心盖住 list、str 这类内置功能时，回这节查。",
       doc: "https://docs.python.org/zh-cn/3.14/reference/lexical_analysis.html#identifiers",
       points: [
@@ -68,7 +70,8 @@ print(match)
     },
     {
       id: "1.3", title: "缩进与代码块",
-      use: "Python 用缩进表达「谁属于谁」，写 if、for、def 全靠它。看到 IndentationError，或代码执行的时机跟想的不一样，多半错在缩进。",
+      what: "Python 不用大括号，靠行首的空格（缩进）划分「哪些行属于谁」；冒号后面缩进的那几行，就是一个代码块。",
+      use: "写 if、for、def 都靠缩进划地盘。看到 IndentationError，或代码执行的时机跟想的不一样，多半错在缩进。",
       doc: "https://docs.python.org/zh-cn/3.14/reference/lexical_analysis.html#indentation",
       points: [
         "Python 用<b>缩进</b>表示层级：每级 4 个空格，同一代码块内必须完全一致",
@@ -93,7 +96,8 @@ print(total)
     },
     {
       id: "1.4", title: "变量与赋值",
-      use: "把数据存起来、给结果贴上名字——几乎每一行程序都在用它。要记住用户输入或中间结果时，就赋值给变量。",
+      what: "变量就是给数据贴的名字：用 = 把值存进这个名字，以后喊一声名字，就能把数据取出来。",
+      use: "要记住用户输入或中间结果时，就赋值给变量——几乎每一行程序都在用它。",
       doc: "https://docs.python.org/zh-cn/3.14/reference/simple_stmts.html#assignment-statements",
       points: [
         "变量是<b>贴在对象上的标签</b>，不是装值的盒子——理解这点后面少踩一半坑",
@@ -121,7 +125,8 @@ print(isinstance(m, int))       # isinstance() 做类型判断`,
     },
     {
       id: "1.5", title: "数字与取整",
-      use: "算账、计数、算平均分都离不开数字运算。round 的「逢五取偶」跟直觉不一样，碰到取整、除法结果不对时先看这节。",
+      what: "数字分整数（int）和小数（float）；除了加减乘除，还有整除 //、取余 %，取整用 round，不过它的规则是「逢五取偶」。",
+      use: "算账、计数、算平均分都离不开数字运算。碰到取整、除法结果跟直觉不一样时，先回这节对答案。",
       doc: "https://docs.python.org/zh-cn/3.14/library/stdtypes.html#numeric-types-int-float-complex",
       points: [
         "int 任意精度不会溢出；float 是双精度，0.1 + 0.2 ≠ 0.3（用 math.isclose 比较）⭐",
@@ -143,6 +148,7 @@ print(round(2.5), round(3.5))                    # ⭐ round 逢五取偶（银�
     },
     {
       id: "1.6", title: "字符串与转义",
+      what: "字符串就是一段文字，用引号包起来；想在文字里放引号、换行这类特殊字符，要靠 \\ 转义，或者干脆用原始字符串。",
       use: "处理文字的基本功：拼接、查找、改写。想在字符串里放引号、换行或 Windows 路径时，转义和原始字符串能救场。",
       doc: "https://docs.python.org/zh-cn/3.14/library/stdtypes.html#text-sequence-type-str",
       points: [
@@ -169,7 +175,8 @@ print(s)`,
     },
     {
       id: "1.7", title: "布尔、None 与假值",
-      use: "表达「是/否」和「什么都没有」。写判断条件、检查用户有没有填内容时天天要用。",
+      what: "布尔值只有 True 和 False 两个，表示「是」和「否」；None 表示「什么都没有」。0、空字符串在判断里也算「否」，叫假值。",
+      use: "写 if 判断、检查用户有没有填内容时，天天都要跟它们打交道。",
       doc: "https://docs.python.org/zh-cn/3.14/library/stdtypes.html#truth-value-testing",
       points: [
         "假值：False、None、0、0.0、空字符串、空列表/字典/集合——<b>其余全为真</b>（含 \"0\"、[0]）⭐",
@@ -191,7 +198,8 @@ print(0 and 1 / 0)           # 短路求值：左边已能定结果，右边不�
     },
     {
       id: "1.8", title: "输入与输出",
-      use: "让程序和你对话：input 收进来，print 发出去。做任何命令行小工具都离不开这两个。",
+      what: "print 把内容显示到屏幕上；input 停下来等你打字，再把你输入的内容交给程序。",
+      use: "做任何命令行小工具都离不开这两个——一个负责听，一个负责说。",
       doc: "https://docs.python.org/zh-cn/3.14/library/functions.html#print",
       points: [
         "print：sep 改分隔符、end 改结尾、flush 立即显示",
@@ -214,6 +222,7 @@ print(f"明年 {age + 1} 岁")`,
     },
     {
       id: "1.9", title: "运算符与优先级",
+      what: "运算符是做计算和比较的符号（+、==、and 这些）；优先级决定一个式子里先算哪一步，拿不准就加括号。",
       use: "加减乘除之外，还有整除、取余、比较和逻辑运算。表达式算出来跟预期不符时，多半是优先级没想清楚。",
       doc: "https://docs.python.org/zh-cn/3.14/reference/expressions.html#operator-precedence",
       points: [

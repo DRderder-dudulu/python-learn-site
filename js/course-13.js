@@ -17,7 +17,8 @@ COURSE.push({
   sections: [
     {
       id: "13.1", title: "为什么需要注解：不影响运行的说明书",
-      use: "写给人类和 mypy 这类静态检查器看的类型说明，解释器根本不看。想明白「标了 int 为啥传字符串也照跑」、大项目靠什么当护栏，看这节建立认知。",
+      what: "类型注解是写在变量、参数、返回值旁边的类型小标记，长这样：age: int、-> str。",
+      use: "类型注解是写给人类和 mypy 这类静态检查器看的，解释器根本不看。想弄明白「标了 int 为啥传字符串也照跑」、大项目靠什么当护栏，先来这节建立认知。",
       doc: "https://docs.python.org/zh-cn/3.14/library/typing.html",
       points: [
         "⭐ 注解<b>不影响程序运行</b>：类型传错照样跑，Python 仍是动态类型",
@@ -37,6 +38,7 @@ print(greet.__annotations__)   # 注解确实存在函数上，只是没人强�
     },
     {
       id: "13.2", title: "变量与函数注解基础",
+      what: "注解可以标在三个位置：变量后（age: int = 18）、参数后（a: int）、箭头后（-> int 标返回值）。",
       use: "给变量、参数、返回值标类型的具体写法：冒号在前、默认值在后。刚开始写注解、或空容器不知怎么标时，照这节的格式抄就行。",
       doc: "https://docs.python.org/zh-cn/3.14/reference/simple_stmts.html#annotated-assignment-statements",
       points: [
@@ -61,6 +63,7 @@ print(add(5), add(5, 2))
     },
     {
       id: "13.3", title: "mypy 的思路：运行前先挑错（说明性）",
+      what: "mypy 是终端里的静态检查器：跑一下 mypy 文件.py，不用执行代码，就能按注解把类型矛盾挑出来。",
       use: "mypy 这类检查器不运行代码、只读注解，就能揪出类型矛盾。本层不要求安装，先建立「注解是给工具看的」的认知；记住 isinstance 查不了容器元素类型。",
       doc: "https://mypy.readthedocs.io/en/latest/",
       points: [
@@ -86,6 +89,7 @@ print(isinstance(data, list))      # 运行时检查只能看外壳：是 list �
     },
     {
       id: "13.4", title: "常见类型写法：List / Optional / Union",
+      what: "list[int] 读作「装 int 的列表」；Optional[int] 是「int 或 None」；Union[int, str] 是「二选一」。",
       use: "「装 int 的列表」「可能是 None」「两种类型二选一」的写法都在这节。返回值可能拿不到、参数能收多种类型时来查；Any 等于放弃检查，能不用就不用。",
       ver: "3.9+",
       doc: "https://docs.python.org/zh-cn/3.14/library/stdtypes.html#types-genericalias",
@@ -125,6 +129,7 @@ print(avg((1, 2, 3)), loose("啥都行"))`,
     },
     {
       id: "13.5", title: "dataclass 简介：少写样板代码",
+      what: "@dataclass 是写在类上一行的装饰器：你按注解声明字段，__init__、__repr__、__eq__ 就自动生成。",
       use: "写「只装数据的类」时，@dataclass 生成 __init__ 等模板方法，省掉大段样板。列表字段默认值报错时，看 default_factory。",
       doc: "https://docs.python.org/zh-cn/3.14/library/dataclasses.html",
       points: [

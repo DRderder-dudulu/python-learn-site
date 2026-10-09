@@ -18,6 +18,7 @@ COURSE.push({
   sections: [
     {
       id: "19.1", title: "描述符：属性访问的「后台」",
+      what: "描述符就是实现了 __get__、__set__、__delete__ 之一的对象；挂在类里当属性后，读写它都会先经过这些方法。",
       use: "解释 a.x = 1 这种普通操作为什么能「带动作」——@property、普通方法本质都是它。读源码见到 __get__ 不慌、想搞清属性查找顺序时回这节。",
       doc: "https://docs.python.org/zh-cn/3.14/reference/datamodel.html#descriptors",
       points: [
@@ -53,7 +54,8 @@ print(a.x)     # 表面是普通读取，实际走了 Logged.__get__`,
     },
     {
       id: "19.2", title: "元类与 __new__：创建类的类",
-      use: "「定义类的瞬间」统一做事：99% 的需求 __init_subclass__ 就够，别急着上元类。int/str 不可变子类，靠 __new__ 定型。",
+      what: "类是造对象的图纸，元类就是造图纸的图纸（默认是 type）；__new__ 则是真正把实例造出来的那一步。",
+      use: "「定义类的瞬间」统一做事：99% 的需求 __init_subclass__ 就够，别急着上元类。想自定义 int/str 这种不可变子类，得靠 __new__ 在创建时定型。",
       doc: "https://docs.python.org/zh-cn/3.14/reference/datamodel.html#metaclasses",
       points: [
         "类是造对象的图纸，<b>元类是造图纸的图纸</b>——默认元类就是 <code>type</code>",
@@ -98,6 +100,7 @@ except ValueError as e:
     },
     {
       id: "19.3", title: "闭包与延迟绑定坑",
+      what: "闭包是内层函数把外层的局部变量「打包带走」：外层函数都返回了，这份变量还活着、还能用。",
       use: "让函数「记住」出生时的外层变量，做计数器、回调全靠它。循环批量造 lambda 必踩共享变量的坑——拿到同一个值，用 lambda i=i: i 钉住当前值。",
       doc: "https://docs.python.org/zh-cn/3.14/reference/executionmodel.html#naming-and-binding",
       points: [
@@ -129,6 +132,7 @@ print([f() for f in funcs])`,
     },
     {
       id: "19.4", title: "__slots__ 与 namedtuple：给实例瘦身",
+      what: "__slots__ 是写在类里的属性「白名单」：声明后实例不再背 __dict__ 字典；namedtuple 则是把几个值捆成一条轻量、不可变的记录。",
       use: "造几百万个小对象时，__slots__ 省内存，还拦住敲错的属性名。几个值捆成轻量记录用 namedtuple 省事；要可变再上 @dataclass。",
       doc: "https://docs.python.org/zh-cn/3.14/reference/datamodel.html#slots",
       points: [
@@ -171,7 +175,8 @@ print(q[0], q[1])              # 下标也能访问`,
     },
     {
       id: "19.5", title: "垃圾回收与弱引用：对象何时消失",
-      use: "回答「对象什么时候消失」：对象计数归零即回收，互指的循环引用交给 gc 清扫。缓存怕「拽着对象不让它死」用弱引用；关键清理别押 __del__，用 with。",
+      what: "垃圾回收是 Python 自动清掉没人用的对象：主要靠给每个对象记「引用计数」，归零就回收；弱引用则是不占计数的引用。",
+      use: "回答「对象什么时候消失」：对象计数归零即回收，互指的循环引用交给 gc 清扫。做缓存怕「拽着对象不让它死」，就用弱引用；关键清理别押 __del__，用 with。",
       doc: "https://docs.python.org/zh-cn/3.14/library/weakref.html",
       points: [
         "CPython 主要靠<b>引用计数</b>：没有名字指向的对象，计数归零立即回收（del 只是减计数）",
