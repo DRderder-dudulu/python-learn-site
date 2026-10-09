@@ -17,6 +17,7 @@ COURSE.push({
   sections: [
     {
       id: "6.1", title: "import 机制",
+      use: "想用别人写好的功能、或把自己的代码拆成几个文件时，靠 import。三种导入形态怎么选、为什么重复 import 不会重跑，都在这节。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/modules.html",
       points: [
         "模块就是一个 .py 文件；⭐ 首次导入会从头到尾执行一遍并缓存，重复导入不重跑",
@@ -44,6 +45,7 @@ print(js.dumps({"a": 1}))       # 通过别名 js 调用 json
     },
     {
       id: "6.2", title: "__main__ 守卫",
+      use: "想让一个文件既能直接运行、又能被别人安全导入（导入时不乱跑），就把脚本逻辑放进 main()，用 if __name__ == 「__main__」 守住入口。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/modules.html#executing-modules-as-scripts",
       points: [
         "__name__ 在<b>直接运行</b>时是 \"__main__\"，被导入时是模块名 ⭐",
@@ -63,6 +65,7 @@ if __name__ == "__main__":      # __main__ 守卫：直接运行才调用，被�
     },
     {
       id: "6.3", title: "包与相对导入",
+      use: "项目大了要把模块按目录分装，就成了包。包内文件互相引用用相对导入，运行时记得用 python -m 包.模块——直接 python 包内文件会报错。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/modules.html#packages",
       points: [
         "常规包 = 含 __init__.py 的目录；命名空间包（3.3+）可以没有它",
@@ -88,6 +91,7 @@ print("包的结构见上方注释（需要真实目录才能运行）")`,
     },
     {
       id: "6.4", title: "标准库速览",
+      use: "常用功能 Python 大多自带，import 就能用，pip 都不用装。造轮子前先翻标准库：统计用 Counter、路径用 pathlib，常有现成的。",
       doc: "https://docs.python.org/zh-cn/3.14/library/index.html",
       points: [
         "Python 自带电池：math / random / datetime / json / re / os / sys",
@@ -123,6 +127,7 @@ print(PurePath("a/b/c.txt").suffix)     # pathlib：路径`,
     },
     {
       id: "6.5", title: "from __future__（了解）",
+      use: "在老代码文件顶部看到这行，知道它是「提前打开新版本特性」的开关就行。最常见的 annotations 那行，3.14 起已经不用写了。",
       doc: "https://docs.python.org/zh-cn/3.14/library/__future__.html",
       points: [
         "「未来特性开关」，必须放在文件最顶部（docstring 之后）",

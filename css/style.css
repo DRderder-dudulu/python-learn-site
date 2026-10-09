@@ -84,6 +84,9 @@ a.go-btn:hover { background: var(--primary-deep); border-color: var(--primary-de
 .qa-input-row input:focus { outline: none; border-color: var(--primary); }
 .qa-settings input[type="text"], .qa-settings input[type="password"] { padding: 6px 10px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--card); color: var(--fg); }
 
+/* 小节用途提示框 */
+.use-box { background: var(--primary-bg); color: var(--primary-deep); border-left: 4px solid var(--primary); border-radius: 8px; padding: 10px 14px; margin: 10px 0; }
+
 .output { display: none; margin-top: 8px; background: #1B2925; color: #9FE8A9; padding: 10px 14px; border-radius: 10px; font-family: var(--font-mono); font-size: 13px; white-space: pre-wrap; }
 .output.show { display: block; }
 .output.err { color: #FF9C9C; }

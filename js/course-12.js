@@ -17,6 +17,7 @@ COURSE.push({
   sections: [
     {
       id: "12.1", title: "函数即对象：装饰器的地基",
+      use: "函数能赋给变量、当参数传、还能记住外层变量（闭包）。这三板斧不熟，后面的装饰器看一百遍也像黑魔法。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/controlflow.html#defining-functions",
       points: [
         "函数在 Python 里是<b>一等对象</b>：能赋给变量、当参数传递、当返回值返回",
@@ -48,6 +49,7 @@ print(add3(10))
     },
     {
       id: "12.2", title: "最简装饰器：@ 只是语法糖",
+      use: "想给一批函数统一加「前后动作」（打日志、计时）又不改动原函数，就用 @。它完全等价于 f = deco(f)，没有黑魔法。",
       doc: "https://docs.python.org/zh-cn/3.14/glossary.html#term-decorator",
       points: [
         "<code>@loud</code> 写在 def 上面，完全等价于 <code>hello = loud(hello)</code>",
@@ -85,6 +87,7 @@ print(core())`,
     },
     {
       id: "12.3", title: "functools.wraps：别把原函数弄丢",
+      use: "自己写装饰器时的必带配件：少了它，被装饰函数的名字和文档全丢，help() 一看就露馅。wrapper 里配 *args、**kwargs 通吃任意参数。",
       doc: "https://docs.python.org/zh-cn/3.14/library/functools.html#functools.wraps",
       points: [
         "被装饰后，<code>add</code> 这个名字其实指向 wrapper：<code>__name__</code>、<code>__doc__</code> 全丢了",
@@ -118,6 +121,7 @@ print(add.__doc__)     # 有 wraps：文档字符串还在
     },
     {
       id: "12.4", title: "带参数的装饰器：三层套娃",
+      use: "想让装饰器本身也能收参数（比如 @repeat(3) 控制重复几次）时，就在外面再套一层。看到三层嵌套别慌，就是参数层、装饰层、包装层这个套路。",
       doc: "https://docs.python.org/zh-cn/3.14/glossary.html#term-decorator",
       points: [
         "<code>@repeat(3)</code> 会先调用 <code>repeat(3)</code> 拿到真正的装饰器，再去装饰函数",
@@ -147,6 +151,7 @@ hi("小明")`,
     },
     {
       id: "12.5", title: "@contextmanager：用生成器写 with",
+      use: "想自己发明一个 with 语句（进入时做准备、退出时必收尾）时用。写一个带 yield 的函数就行，不必手写 __enter__/__exit__ 的类。",
       doc: "https://docs.python.org/zh-cn/3.14/library/contextlib.html#contextlib.contextmanager",
       points: [
         "with 的原理：对象实现 <code>__enter__</code> / <code>__exit__</code> 即可（文件就是这么干的）",
@@ -176,6 +181,7 @@ with banner() as v:
     },
     {
       id: "12.6", title: "内置好帮手：suppress 与 redirect_stdout",
+      use: "两个即取即用的现成工具：某些异常「知道了、不用管」时用 suppress 安静跳过；想抓住 print 的输出做测试，用 redirect_stdout。",
       doc: "https://docs.python.org/zh-cn/3.14/library/contextlib.html",
       points: [
         "<code>contextlib.suppress(某异常)</code>：安静吞掉指定异常，程序继续走",

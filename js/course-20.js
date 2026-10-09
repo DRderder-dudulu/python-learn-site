@@ -19,6 +19,7 @@ COURSE.push({
   sections: [
     {
       id: "20.1", title: "文件批处理：新手的第一个作品",
+      use: "整理乱糟糟的下载文件夹：按类型归档、批量改名、清理重复，几行标准库代码搞定。批量动手前先把 move 换成 print 演练，确认清单无误再放行。",
       doc: "https://docs.python.org/zh-cn/3.14/library/pathlib.html",
       points: [
         "⭐ 最推荐的起点：<b>批量重命名、按类型归档、清理重复文件</b>——纯标准库，立刻变现",
@@ -51,6 +52,7 @@ for p in sorted(d.rglob("*")):
     },
     {
       id: "20.2", title: "文本与日志分析：从几千行里捞信息",
+      use: "几千行日志肉眼翻不动：re 抓目标、Counter 自动数数，几秒统计出「哪种报错最多」、捞出全部 ERROR 行。排查、分析聊天记录或账单都用这套。",
       doc: "https://docs.python.org/zh-cn/3.14/library/re.html",
       points: [
         "场景：几千行日志里统计关键字、抓出所有报错——<code>re</code>（6.4）+ <code>Counter</code> 就够",
@@ -85,6 +87,7 @@ for line in log.splitlines():
     },
     {
       id: "20.3", title: "数据格式与小型数据库",
+      use: "存配置、读表格、换数据靠 JSON 和 csv（导出中文用 ensure_ascii=False）；按条件查，标准库自带 sqlite3，零安装当单文件数据库。",
       doc: "https://docs.python.org/zh-cn/3.14/library/json.html",
       points: [
         "⭐ <code>json.dumps(data, ensure_ascii=False)</code>：不加这个参数，中文会变 \\uXXXX 转义",
@@ -122,6 +125,7 @@ con.close()`,
     },
     {
       id: "20.4", title: "网络请求思路：先学原理，再装 requests",
+      use: "写爬虫调接口前，练 URL 基本功：urlparse 拆零件、urlencode 拼参数。发请求用 requests；联网守 robots.txt 和频率限制。",
       doc: "https://docs.python.org/zh-cn/3.14/library/urllib.parse.html",
       points: [
         "标准库 <code>urllib</code> 能发 HTTP 请求；日常更推荐第三方 <code>requests</code>，语法更顺手",
@@ -151,6 +155,7 @@ print(params)`,
     },
     {
       id: "20.5", title: "把脚本做成 CLI 工具",
+      use: "把脚本变成命令行工具：不改代码就能换输入。argparse 管解析、类型校验、自动生成 -h 帮助；sys.argv 认得就行（取到的全是字符串）。",
       doc: "https://docs.python.org/zh-cn/3.14/library/argparse.html",
       points: [
         "<code>sys.argv</code> 是最原始的参数来源：列表，第一个元素是脚本名，⭐ <b>全是字符串</b>",

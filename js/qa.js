@@ -162,13 +162,13 @@ const QA = (() => {
           title: "§" + sec.id + " " + sec.title,
           url: "#/course/" + l.id,
           desc: "课程 · " + l.title,
-          body: pts + " " + (sec.note || ""),
+          body: (sec.use || "") + " " + pts + " " + (sec.note || ""),
           code: sec.code || "",
           html: "",
           points: sec.points || [],
           titleL: norm(sec.title + " " + l.title),
           descL: norm(l.title + " " + l.goal),
-          bodyL: norm(pts + " " + (sec.note || "")),
+          bodyL: norm((sec.use || "") + " " + pts + " " + (sec.note || "")),
           codeL: norm(sec.code || ""),
         });
       });
@@ -208,9 +208,9 @@ const QA = (() => {
       .slice(0, k);
   }
 
-  /* 把握分档：>=14 有把握；6~14 可能相关；<6 视为没识别出 Python 相关知识点 */
+  /* 把握分档：>=14 有把握；8~14 可能相关；<8 视为没识别出 Python 相关知识点 */
   const CONFIDENT = 14;
-  const MAYBE = 6;
+  const MAYBE = 8;
 
   /* ---- 可选大模型（BYOK） ---- */
   function llmSettings() {

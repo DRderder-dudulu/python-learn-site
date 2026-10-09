@@ -17,6 +17,7 @@ COURSE.push({
   sections: [
     {
       id: "7.1", title: "类与对象：自己定义一种「东西」",
+      use: "内置类型不够描述你程序里的东西时，用 class 自己定义一种。类是图纸，调用类名就照图纸造出一个独立的对象。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/classes.html",
       points: [
         "类（class）是<b>图纸</b>，对象是图纸造出来的<b>实物</b>；同一张图纸能造很多个互不相干的实物",
@@ -38,6 +39,7 @@ print(Dog.__doc__)`,
     },
     {
       id: "7.2", title: "__init__ 与实例属性",
+      use: "想让对象一出生就带上自己的数据（名字、年龄），就在 __init__ 里用 self.x = ... 贴上去。每个对象各存各的，互不干扰。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/classes.html#class-objects",
       points: [
         "<code>__init__</code> 是实例化时自动执行的初始化方法，不是构造函数（对象在它还轮不到造）",
@@ -60,6 +62,7 @@ print(d.age, d.weight)`,
     },
     {
       id: "7.3", title: "实例方法与 self",
+      use: "对象光有数据不够，还得会做事：类里定义的函数就是方法，self 就是调用它的那个对象。忘写 self 是最常见的新手错误，会报 TypeError。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/classes.html#instance-objects",
       points: [
         "类里定义的函数就是<b>方法</b>，第一个参数习惯叫 <code>self</code>",
@@ -87,6 +90,7 @@ print(e.bark())        # 各对象互不影响：self 换成了 e
     },
     {
       id: "7.4", title: "类属性 vs 实例属性",
+      use: "全类共享一份的数据（比如「物种」）写成类属性，各对象自己的数据用 self.x。注意：把列表、字典当类属性，一处 append 所有对象跟着变。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/classes.html#class-and-instance-variables",
       points: [
         "写在类体里、方法外面的是<b>类属性</b>：全类共享一份，改一处处处生效",
@@ -118,6 +122,7 @@ print(y.tricks)               # ……所有对象跟着变（其实改的是共
     },
     {
       id: "7.5", title: "继承与 super()",
+      use: "几个类有一堆相同代码时，抽个父类继承，子类只写差异；覆盖父类方法又想用它的功能，就调 super()。记住「是一种」才继承，只是「用到」就写成属性（组合）。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/classes.html#inheritance",
       points: [
         "<code>class Dog(Animal):</code> 表示 Dog 继承 Animal：自动拥有父类的一切",
@@ -157,6 +162,7 @@ print(Robot().voice.speak())`,
     },
     {
       id: "7.6", title: "特殊方法：让对象融入 Python 语法",
+      use: "想让自己的对象也能被 print 得好看、用 + 相加、被 len() 量长度，就实现对应的特殊方法。内置类型用起来顺手，靠的就是这套协议。",
       doc: "https://docs.python.org/zh-cn/3.14/reference/datamodel.html#special-method-names",
       points: [
         "双下划线方法（dunder）是 Python 的<b>协议</b>：定义了它，内置语法就认识你的对象",
@@ -190,6 +196,7 @@ print(Vector(1, 2) == Vector(1, 2))
     },
     {
       id: "7.7", title: "属性保护与 @property",
+      use: "不想让人把数据改坏时，用 @property 把属性的读写接管过来：赋值时自动校验，外部的用法却一点不用变。这是封装的基本功。",
       doc: "https://docs.python.org/zh-cn/3.14/library/functions.html#property",
       points: [
         "单下划线 <code>_age</code> 是约定：「内部使用，别直接碰」——Python 不做强制，靠自觉",
@@ -225,6 +232,7 @@ except ValueError as e:
     },
     {
       id: "7.8", title: "综合实战：一个银行账户类",
+      use: "把本层学的串成完整例子：拿到一个现实事物（银行账户），名词变属性、动词变方法、非法操作 raise 拦住。照这个套路，你也能给别的东西建模。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/classes.html",
       points: [
         "建模思路：<b>名词变属性，动词变方法</b>——账户有余额（属性），能存取（方法）",

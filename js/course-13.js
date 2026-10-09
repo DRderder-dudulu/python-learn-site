@@ -17,6 +17,7 @@ COURSE.push({
   sections: [
     {
       id: "13.1", title: "为什么需要注解：不影响运行的说明书",
+      use: "写给人类和 mypy 这类静态检查器看的类型说明，解释器根本不看。想明白「标了 int 为啥传字符串也照跑」、大项目靠什么当护栏，看这节建立认知。",
       doc: "https://docs.python.org/zh-cn/3.14/library/typing.html",
       points: [
         "⭐ 注解<b>不影响程序运行</b>：类型传错照样跑，Python 仍是动态类型",
@@ -36,6 +37,7 @@ print(greet.__annotations__)   # 注解确实存在函数上，只是没人强�
     },
     {
       id: "13.2", title: "变量与函数注解基础",
+      use: "给变量、参数、返回值标类型的具体写法：冒号在前、默认值在后。刚开始写注解、或空容器不知怎么标时，照这节的格式抄就行。",
       doc: "https://docs.python.org/zh-cn/3.14/reference/simple_stmts.html#annotated-assignment-statements",
       points: [
         "变量：<code>age: int = 18</code>；参数：<code>a: int</code>；返回值：<code>-> int</code>",
@@ -59,6 +61,7 @@ print(add(5), add(5, 2))
     },
     {
       id: "13.3", title: "mypy 的思路：运行前先挑错（说明性）",
+      use: "mypy 这类检查器不运行代码、只读注解，就能揪出类型矛盾。本层不要求安装，先建立「注解是给工具看的」的认知；记住 isinstance 查不了容器元素类型。",
       doc: "https://mypy.readthedocs.io/en/latest/",
       points: [
         "mypy / pyright 是<b>不运行代码</b>的检查器：只读注解，找出类型矛盾",
@@ -83,6 +86,7 @@ print(isinstance(data, list))      # 运行时检查只能看外壳：是 list �
     },
     {
       id: "13.4", title: "常见类型写法：List / Optional / Union",
+      use: "「装 int 的列表」「可能是 None」「两种类型二选一」的写法都在这节。返回值可能拿不到、参数能收多种类型时来查；Any 等于放弃检查，能不用就不用。",
       ver: "3.9+",
       doc: "https://docs.python.org/zh-cn/3.14/library/stdtypes.html#types-genericalias",
       points: [
@@ -121,6 +125,7 @@ print(avg((1, 2, 3)), loose("啥都行"))`,
     },
     {
       id: "13.5", title: "dataclass 简介：少写样板代码",
+      use: "写「只装数据的类」时，@dataclass 生成 __init__ 等模板方法，省掉大段样板。列表字段默认值报错时，看 default_factory。",
       doc: "https://docs.python.org/zh-cn/3.14/library/dataclasses.html",
       points: [
         "<code>@dataclass</code> 按类体里的注解自动生成 <code>__init__</code>、<code>__repr__</code>、<code>__eq__</code>",

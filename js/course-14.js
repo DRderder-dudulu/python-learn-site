@@ -17,6 +17,7 @@ COURSE.push({
   sections: [
     {
       id: "14.1", title: "同步 vs 异步：先建立正确认知",
+      use: "先判断你的活适不适合异步：爬虫、API 这类网络活提速明显，压缩、计算等 CPU 活白搭（multiprocessing 的地盘）。写 async 前看这节。",
       doc: "https://docs.python.org/zh-cn/3.14/library/asyncio.html",
       points: [
         "同步：一件事做完才做下一件——等待（网络、磁盘）时只能干瞪眼",
@@ -48,6 +49,7 @@ asyncio.run(main())`,
     },
     {
       id: "14.2", title: "async def 与 await：协程不是调用就跑",
+      use: "调了 async 函数却没动静？那只是协程对象，得靠 await 或 asyncio.run 才执行。撞上「was never awaited」警告时回这节。",
       doc: "https://docs.python.org/zh-cn/3.14/library/asyncio-task.html#coroutines",
       points: [
         "<code>async def</code> 定义的是<b>协程函数</b>；<code>await</code> 等待它跑完并取回结果",
@@ -76,6 +78,7 @@ asyncio.run(main())     # 顶层入口交给 asyncio.run`,
     },
     {
       id: "14.3", title: "asyncio.run 与 gather：一起出发",
+      use: "让多个异步任务同时起跑：asyncio.run 开门，gather 发令，全部完成后按传入顺序收结果。要并发请求一批接口、或疑惑「总耗时怎么不是相加」时用它。",
       doc: "https://docs.python.org/zh-cn/3.14/library/asyncio-task.html#asyncio.gather",
       points: [
         "<code>asyncio.run(main())</code> 是程序入口：启动事件循环，跑完 main 再收尾",
@@ -104,6 +107,7 @@ asyncio.run(main())     # 程序入口：启动事件循环，跑完 main 再收
     },
     {
       id: "14.4", title: "async with 与 async for：异步世界的配套语法",
+      use: "异步世界管资源、取数据的写法：连接交给 async with 自动开关，分页等网络的数据用 async for 逐条取。用异步库的连接或翻页接口时会碰到。",
       doc: "https://docs.python.org/zh-cn/3.14/reference/compound_stmts.html#the-async-with-statement",
       points: [
         "异步资源（连接、会话）用 <code>async with</code> 管理：进入走 <code>__aenter__</code>，离开走 <code>__aexit__</code>",
@@ -145,6 +149,7 @@ asyncio.run(main())`,
     },
     {
       id: "14.5", title: "常见误区：忘记 await 与阻塞调用",
+      use: "异步两大翻车点：忘了 await；协程里调 time.sleep、requests 卡死事件循环。结果不对或变慢照这节查；阻塞库交给 to_thread。",
       doc: "https://docs.python.org/zh-cn/3.14/library/asyncio-dev.html",
       points: [
         "⭐ 忘了 await：拿到的是<b>协程对象</b>而不是结果——结果对不上先查这个",

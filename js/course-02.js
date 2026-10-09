@@ -17,6 +17,7 @@ COURSE.push({
   sections: [
     {
       id: "2.1", title: "if / elif / else",
+      use: "让程序分情况办事：条件成立走这条分支，不成立走那条。凡是「如果…就…否则…」的判断都靠它；>= 60 含不含 60 这种边界最要想清楚。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/controlflow.html#if-statements",
       points: [
         "冒号 + 缩进；elif 可以有任意多个；else 可省略",
@@ -41,6 +42,7 @@ print(60 >= 60, 59 >= 60)    # ⭐ 边界值要想清楚：>= 60 含 60；59 才
     },
     {
       id: "2.2", title: "while 循环与 else 子句",
+      use: "不知道要循环几次、只知道什么条件下该停，就用 while。中途收工（break）、跳过某轮（continue）、「找了一圈没找到」（else），这节全包了。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/controlflow.html",
       points: [
         "while 条件为真就循环——⭐ 别忘了更新条件变量，否则死循环",
@@ -71,6 +73,7 @@ else:                        # 循环【没被 break 打断】才执行——天
     },
     {
       id: "2.3", title: "for 循环与 range",
+      use: "把列表、字符串里的元素一个个取出来处理，就用 for。要数数（range）、想要序号（enumerate）、两列一起走（zip），都是它的日常搭档。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/controlflow.html#for-statements",
       points: [
         "for 是<b>遍历</b>：把可迭代对象的元素一个个取出",
@@ -104,6 +107,7 @@ print(evens)`,
     },
     {
       id: "2.4", title: "match 结构化模式匹配",
+      use: "按「数据的形状」分情况处理：命令是「go north」还是「quit」，match 匹配结构、顺便拆值，省掉一长串 if/elif。3.10 及以上才能用。",
       ver: "3.10+",
       doc: "https://docs.python.org/zh-cn/3.14/reference/compound_stmts.html#the-match-statement",
       points: [

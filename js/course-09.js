@@ -18,6 +18,7 @@ COURSE.push({
   sections: [
     {
       id: "9.1", title: "bytes：字符与字节的两座世界",
+      use: "文字进出网络、图片、压缩包时都会变成字节。看到 b'...' 或撞上 UnicodeDecodeError，就是两座世界没对上，回这节搭桥。",
       doc: "https://docs.python.org/zh-cn/3.14/library/stdtypes.html#bytes-objects",
       points: [
         "str 是「字符」，bytes 是「原始字节」（0—255 的整数序列）；网络传输、图片、压缩包里跑的都是字节",
@@ -43,6 +44,7 @@ print(b"img.png".startswith(b"img"))  # find/replace/startswith…… 同理`,
     },
     {
       id: "9.2", title: "bytearray：可变的字节序列",
+      use: "要就地改字节时用——比如边收数据边改缓冲区。普通 bytes 改不了、只能新建，这时候换 bytearray。",
       doc: "https://docs.python.org/zh-cn/3.14/library/stdtypes.html#bytearray-objects",
       points: [
         "bytearray 是 bytes 的<b>可变版</b>：能按下标改、append、extend，改的是原对象本身",
@@ -67,6 +69,7 @@ print(b, b2)`,
     },
     {
       id: "9.3", title: "二进制文件读写与 memoryview",
+      use: "读写图片、音频这类非文本文件时用 rb/wb，编解码得自己接手。数据大、想省内存地改其中一段，就用 memoryview 开「视图」。",
       doc: "https://docs.python.org/zh-cn/3.14/library/io.html#io.BytesIO",
       points: [
         "<code>open(path, \"rb\")</code> 读出来的是 bytes、<code>\"wb\"</code> 写入也必须给 bytes——编解码要自己接手",
@@ -100,6 +103,7 @@ print(ba)`,
     },
     {
       id: "9.4", title: "struct：按格式串打包字节",
+      use: "解析文件头、跟网络协议打交道时，要把数字按固定字节数打包再解回来，就用它。日常纯文本处理用不到，见到不慌即可。",
       doc: "https://docs.python.org/zh-cn/3.14/library/struct.html",
       points: [
         "<code>struct.pack(格式串, 值...)</code> 把数字按固定字节数打成 bytes；<code>struct.unpack(格式串, 字节)</code> 解回元组",

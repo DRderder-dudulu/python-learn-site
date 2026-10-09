@@ -18,6 +18,7 @@ COURSE.push({
   sections: [
     {
       id: "19.1", title: "描述符：属性访问的「后台」",
+      use: "解释 a.x = 1 这种普通操作为什么能「带动作」——@property、普通方法本质都是它。读源码见到 __get__ 不慌、想搞清属性查找顺序时回这节。",
       doc: "https://docs.python.org/zh-cn/3.14/reference/datamodel.html#descriptors",
       points: [
         "实现了 <code>__get__</code> / <code>__set__</code> / <code>__delete__</code> 之一的对象就是<b>描述符</b>",
@@ -52,6 +53,7 @@ print(a.x)     # 表面是普通读取，实际走了 Logged.__get__`,
     },
     {
       id: "19.2", title: "元类与 __new__：创建类的类",
+      use: "「定义类的瞬间」统一做事：99% 的需求 __init_subclass__ 就够，别急着上元类。int/str 不可变子类，靠 __new__ 定型。",
       doc: "https://docs.python.org/zh-cn/3.14/reference/datamodel.html#metaclasses",
       points: [
         "类是造对象的图纸，<b>元类是造图纸的图纸</b>——默认元类就是 <code>type</code>",
@@ -96,6 +98,7 @@ except ValueError as e:
     },
     {
       id: "19.3", title: "闭包与延迟绑定坑",
+      use: "让函数「记住」出生时的外层变量，做计数器、回调全靠它。循环批量造 lambda 必踩共享变量的坑——拿到同一个值，用 lambda i=i: i 钉住当前值。",
       doc: "https://docs.python.org/zh-cn/3.14/reference/executionmodel.html#naming-and-binding",
       points: [
         "闭包：内层函数把外层的局部变量「打包带走」，外层函数返回后变量还活着",
@@ -126,6 +129,7 @@ print([f() for f in funcs])`,
     },
     {
       id: "19.4", title: "__slots__ 与 namedtuple：给实例瘦身",
+      use: "造几百万个小对象时，__slots__ 省内存，还拦住敲错的属性名。几个值捆成轻量记录用 namedtuple 省事；要可变再上 @dataclass。",
       doc: "https://docs.python.org/zh-cn/3.14/reference/datamodel.html#slots",
       points: [
         "普通实例随身背一个 <code>__dict__</code> 字典；<code>__slots__ = (\"x\", \"y\")</code> 把它省掉，属性名固定",
@@ -167,6 +171,7 @@ print(q[0], q[1])              # 下标也能访问`,
     },
     {
       id: "19.5", title: "垃圾回收与弱引用：对象何时消失",
+      use: "回答「对象什么时候消失」：对象计数归零即回收，互指的循环引用交给 gc 清扫。缓存怕「拽着对象不让它死」用弱引用；关键清理别押 __del__，用 with。",
       doc: "https://docs.python.org/zh-cn/3.14/library/weakref.html",
       points: [
         "CPython 主要靠<b>引用计数</b>：没有名字指向的对象，计数归零立即回收（del 只是减计数）",

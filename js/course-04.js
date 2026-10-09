@@ -17,6 +17,7 @@ COURSE.push({
   sections: [
     {
       id: "4.1", title: "定义与调用",
+      use: "把反复要用的代码打包成函数，以后喊一声名字就执行。print 只是显示、return 才是交还结果——没写 return 的函数只会给你 None。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/controlflow.html#defining-functions",
       points: [
         "def 定义，return 交还结果；调用时才执行函数体",
@@ -43,6 +44,7 @@ print(result)                # print 没有返回值，result 是 None`,
     },
     {
       id: "4.2", title: "参数的五种形态",
+      use: "让函数接口更灵活：参数带默认值、收任意多个、强制按名字传，都靠这五种形态。默认值写 [] 是经典大坑，正确姿势是用 None 占位。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/controlflow.html#more-on-defining-functions",
       points: [
         "/ 前仅限位置（3.8+）；普通参数位置或关键字均可",
@@ -78,6 +80,7 @@ print(add(1), add(2))
     },
     {
       id: "4.3", title: "调用规则与解包",
+      use: "数据已经在元组或字典里，想直接喂给函数：f(*序列) 拆成位置参数、f(**字典) 拆成关键字参数，不用手写一长串。",
       doc: "https://docs.python.org/zh-cn/3.14/reference/expressions.html#calls",
       points: [
         "位置参数不能跟在关键字参数后面（SyntaxError）",
@@ -100,6 +103,7 @@ f(**kwargs)                  # f(**字典)：拆成关键字参数
     },
     {
       id: "4.4", title: "作用域与 global / nonlocal",
+      use: "函数里改不动外面的变量、同名变量算哪个，都是作用域问题。看懂 LEGB 查找顺序，遇到 UnboundLocalError 和「改了没生效」就会修。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/classes.html#python-scopes-and-namespaces",
       points: [
         "名字查找顺序 LEGB：局部 → 外层函数 → 全局 → 内置",
@@ -145,6 +149,7 @@ print(nums)`,
     },
     {
       id: "4.5", title: "lambda 匿名函数",
+      use: "写一次性的小函数，尤其给 sorted 当 key：lambda w: len(w) 一行搞定，省得专门 def。逻辑稍一复杂，就老老实实换回 def。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/controlflow.html#lambda-expressions",
       points: [
         "lambda 参数: 表达式——只能写一个表达式",
@@ -168,6 +173,7 @@ print(grade(60))`,
     },
     {
       id: "4.6", title: "函数注解（简介）",
+      use: "给参数和返回值标上类型，当写给读者和检查工具的说明书。它不影响运行，标错了照样能跑——真正把关靠 mypy 这类工具。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/controlflow.html#function-annotations",
       points: [
         "注解是写给人类和检查工具的「说明书」⭐ 不影响运行",
@@ -187,6 +193,7 @@ print(add("x", "y"))         # ⭐ 注解不影响运行：写错类型照样能
     },
     {
       id: "4.7", title: "递归",
+      use: "让函数调用自己，把大问题拆成同样的小问题（阶乘是最经典的例子）。写递归先想清楚什么时候停，没有终止条件就会一路调到 RecursionError。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/controlflow.html#defining-functions",
       points: [
         "函数调用自己；⭐ 必须有终止条件，否则无限递归",

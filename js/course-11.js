@@ -18,6 +18,7 @@ COURSE.push({
   sections: [
     {
       id: "11.1", title: "列表、字典与集合推导式",
+      use: "把「循环加 append」那三四行压成一行的招牌写法。要对一批数据逐个加工、再造个新列表、字典或集合时就用它。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/datastructures.html#list-comprehensions",
       points: [
         "推导式是「一行造容器」的招牌语法：<code>[expr for x in seq]</code> 列表、<code>{expr for ...}</code> 集合、<code>{k: v for ...}</code> 字典",
@@ -45,6 +46,7 @@ print(x)                                # 外面的 x 不受影响`,
     },
     {
       id: "11.2", title: "嵌套与条件推导",
+      use: "造容器时顺带挑拣或给元素换模样：if 在末尾是过滤，if-else 在最前是二选一。拍平二维列表一行搞定，条件一复杂就写回 for 循环。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/datastructures.html#nested-list-comprehensions",
       points: [
         "多个 for 按「从左到右 = 从外到内」套：<code>[(x, y) for x in A for y in B]</code>",
@@ -71,6 +73,7 @@ print(flat)`,
     },
     {
       id: "11.3", title: "迭代器协议：iter、next 与 StopIteration",
+      use: "搞懂 for 循环的内部原理：iter 开工、next 取值、StopIteration 收工。碰到迭代器「取一次就空」的怪事，回这节找答案。",
       doc: "https://docs.python.org/zh-cn/3.14/library/stdtypes.html#iterator-types",
       points: [
         "<b>可迭代</b>（有 __iter__）：list、str、dict、range、文件……可以<b>反复</b>遍历",
@@ -103,6 +106,7 @@ for ch in "ab":           # for 循环的内部真相：先 iter() 再不断 nex
     },
     {
       id: "11.4", title: "生成器函数：yield 暂停术",
+      use: "想要「要一个、算一个」的序列时，用 yield 把普通函数变成生成器：调用时不执行，每次 next 才从上次定格处接着跑。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/classes.html#generators",
       points: [
         "函数里出现 <code>yield</code> 就成了<b>生成器函数</b>：调用它<b>不执行</b>函数体，只返回一个生成器对象 ⭐",
@@ -135,6 +139,7 @@ print(list(g2))            # ⭐ 只能遍历一次：已耗尽，想要第二�
     },
     {
       id: "11.5", title: "生成器表达式与惰性求值",
+      use: "数据量大或干脆算不完（无限序列）时，把 [] 换成 ()：不一次算完，内存只占一个对象。直接喂给 sum、max、join 最顺手。",
       doc: "https://docs.python.org/zh-cn/3.14/tutorial/classes.html#generator-expressions",
       points: [
         "把列表推导式的 [] 换成 () 就是<b>生成器表达式</b>：不一次算完，要一个给一个",
@@ -160,6 +165,7 @@ print(next(big))                  # 数据像在生产线上随取随造`,
     },
     {
       id: "11.6", title: "itertools 精选",
+      use: "官方现成的迭代器工具箱：串联、惰性切片、累计、无限数列都有。处理流水式数据先翻翻它；无限流记得用 islice 截断，直接 list() 会卡死。",
       doc: "https://docs.python.org/zh-cn/3.14/library/itertools.html",
       points: [
         "<code>itertools</code> 是官方迭代器工具箱：全部返回<b>惰性迭代器</b>，要 list() 或 for 取用",
