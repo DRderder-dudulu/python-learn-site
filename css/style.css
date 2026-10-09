@@ -138,6 +138,8 @@ th { background: var(--muted); }
 #pg-editor + .CodeMirror, #pg-editor + .CodeMirror .CodeMirror-scroll { min-height: 90px; }
 .cm-s-material-darker.CodeMirror, .cm-s-material-darker .CodeMirror-gutters { background: var(--code-bg); }
 pre.cm-s-material-darker { background: var(--code-bg); }
+/* 注释提亮：material-darker 默认 #546E7A 在深青底上对比不足，改为浅灰绿并加粗可读性 */
+.cm-s-material-darker .cm-comment { color: #9BC4A8; font-style: normal; }
 .CodeMirror-linenumber { color: #5B716B; }
 
 /* 速查目录：大层折叠，点击展开小层 */
